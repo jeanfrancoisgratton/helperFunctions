@@ -18,7 +18,7 @@ jobs:
         id: semver
         run: |
           set -x
-          echo "TAG="${{ github.ref_name ]}"
+          echo "TAG="${{ github.ref_name }}"
 
   create-release:
     runs-on: ubuntu-latest
