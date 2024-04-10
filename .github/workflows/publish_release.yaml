@@ -2,8 +2,7 @@ name: Publish Release
 
 on:
   push:
-    tags:
-      - ['v[0-9]+\.[0-9]+\.[0-9]+.*']
+    tags: ['v[0-9]+\.[0-9]+\.[0-9]+.*']
     branches:
       - develop
 
@@ -19,7 +18,7 @@ jobs:
         id: semver
         run: |
           set -x
-          echo "TAG="${{ github.ref ]}"
+          echo "TAG="${{ github.ref_name ]}"
 
   create-release:
     runs-on: ubuntu-latest
