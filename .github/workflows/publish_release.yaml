@@ -14,6 +14,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.1.1
 
+      - name: Check if tag follows SemVer
+        id: semver-check
+        run: |
+          echo "github.event.ref: ${{ github.event.ref }}"
+          echo "github.ref: ${{ github.ref }}"
+          echo "github.ref_name: ${{ github.ref_name }}"
+
   create-release:
     runs-on: ubuntu-latest
     needs: check-tag
