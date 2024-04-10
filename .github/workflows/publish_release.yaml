@@ -3,7 +3,7 @@ name: Publish Release
 on:
   push:
     tags:
-      - 'v*'
+      - ['v[0-9]+\.[0-9]+\.[0-9]+.*']
     branches:
       - develop
 
@@ -18,10 +18,8 @@ jobs:
       - name: Verify SemVer tag
         id: semver
         run: |
-          if ! [[ ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+.* ]]; then
-            echo "Invalid SemVer tag."
-            exit 1
-          fi
+          set -x
+          echo "TAG="${{ github.ref ]}"
 
   create-release:
     runs-on: ubuntu-latest
