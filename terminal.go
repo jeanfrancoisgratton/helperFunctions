@@ -33,7 +33,8 @@ func GetTerminalSize() (int, int) {
 
 // Yeah... I know.. nobody should clear a TTY in-tool... :p
 func ClearTTY() {
-	fmt.Println("\\033[2J\\033[H")
+	fmt.Print("\x1b[2J") // Clears screen
+	fmt.Print("\x1b[H")  // Moves cursor to top-left corner
 }
 
 // COLOR FUNCTIONS
