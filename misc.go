@@ -7,6 +7,7 @@ package helperFunctions
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 )
 
@@ -48,4 +49,11 @@ func ReverseString(s string) (result string) {
 		result = string(v) + result
 	}
 	return
+}
+
+func ChangeLog(cl string, clear bool) {
+	if clear {
+		ClearTTY()
+	}
+	fmt.Print(cl)
 }
