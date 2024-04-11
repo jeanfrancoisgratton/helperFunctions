@@ -52,14 +52,15 @@ func GetPassword(prompt string) string {
 
 // Quick functions to encode and decode strings
 // This is based on my encryption-decryption tool : https://github.com/jeanfrancoisgratton/encdec
-func EncodeString(string2encrypt string, privateKey string) string {
+func EncodeString(string2encode string, privateKey string) string {
 	// privateKey is optional here
 	if len(privateKey) != 32 {
+		// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
 		privateKey = "secret key 2 encrypt and decrypt"
 	}
 
 	key := []byte(privateKey)
-	plaintext := []byte(string2encrypt)
+	plaintext := []byte(string2encode)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -78,14 +79,15 @@ func EncodeString(string2encrypt string, privateKey string) string {
 	return base64.URLEncoding.EncodeToString(ciphertext)
 }
 
-func DecodeString(cryptedstring string, privateKey string) string {
+func DecodeString(encodedstring string, privateKey string) string {
 	// privateKey is optional here
 	if len(privateKey) != 32 {
+		// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
 		privateKey = "secret key 2 encrypt and decrypt"
 	}
 
 	key := []byte(privateKey)
-	ciphertext, _ := base64.URLEncoding.DecodeString(cryptedstring)
+	ciphertext, _ := base64.URLEncoding.DecodeString(encodedstring)
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)

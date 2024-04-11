@@ -31,6 +31,11 @@ func GetTerminalSize() (int, int) {
 	return int(size.cols), int(size.rows)
 }
 
+// Yeah... I know.. nobody should clear a TTY in-tool... :p
+func ClearTTY() {
+	fmt.Println("\\033[2J\\033[H")
+}
+
 // COLOR FUNCTIONS
 // ===============
 func Red(sentence string) string {
@@ -47,4 +52,8 @@ func White(sentence string) string {
 
 func Yellow(sentence string) string {
 	return fmt.Sprintf("%s", gchalk.WithBrightYellow().Bold(sentence))
+}
+
+func Blue(sentence string) string {
+	return fmt.Sprintf("%s", gchalk.WithYellow().Bold(sentence))
 }
