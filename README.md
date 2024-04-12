@@ -12,7 +12,7 @@ For now, we have 3 files, with a specific area of responsibility:
 
 | File                    | Area / coverage                                                                                                                                    |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| prompt4Type.go          | Returns a value of a given type (string, bool, int, etc), with a prompt<br>This might seem useless, but I've needed something like that many times |
+| prompt4Types.go          | Returns a value of a given type (string, bool, int, etc), with a prompt<br>This might seem useless, but I've needed something like that many times |
 | terminal.go             | Terminal-related functions, such as colouring output, getting terminal size (WxH), etc                                                             |
 | encodeDecodePassword.go | Functions related to encoding/decoding strings, prompting for (non-echoed) passwords, etc)                                                         |
 | misc.go                 | Various minor functions                                                                                                                            | 
@@ -28,20 +28,20 @@ A simple `go get github.com/jeanfrancoisgratton/functionHelpers` and we're done.
 ### FILE: misc.go
 Two functions, SI(), and ReverseString().
 
+#### SI()
 SI came from a need to have comma-separated number out of a number that wasn't.
 
 For instance, you have the number `123456789`. In a comma-separated format (SI-notation, SI for "Système International"); it becomes, in a string: `123,456,789`
 
-You input a uint64 number, it comes back as a SI-formatted string.
+You input a number, it will come back as an SI-formatted string.
 
-I'm aware that having only a uint64 entrant is kind of a limitation; it'll be worked on.
-
-About ReverseString(), the name says it all:
+#### ReverseString()
+The name says it all:
 
 You input a string ("abcdef"), it returns its reverse ("fedcba").
 
 
-### FILE: prompt4Type.go
+### FILE: prompt4Types.go
 Many functions there, all following the same pattern...
 
 The functions:

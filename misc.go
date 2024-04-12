@@ -6,40 +6,46 @@
 package helperFunctions
 
 import (
-	"bytes"
 	"fmt"
-	"strconv"
 )
 
 // NUMBER FORMATTING FUNCTIONS
 // ===========================
 
 // This function was originally written in 1993, in C, by my friend Jean-François Gauthier (jief@brebis.dyndns.org)
-// I've ported it in C# in 2011. It is then a third iteration of this function
+// I've ported it in C# in 2011. It still loosely based on J.F.Gauthier's version, somehow; credit is given where credit is due
 // This function transforms a multi-digit number in International Notation; 1234567 thus becomes 1,234,567
-func SI(nombre uint64) string {
-	var strN string
-	var strbR bytes.Buffer
-	var nLen, nPos int
-
-	strN = strconv.FormatUint(nombre, 10)
-	strN = ReverseString(strN)
-	nLen = len(strN)
-
-	for nPos < nLen {
-		if nPos != 0 && nPos%3 == 0 {
-			strbR.WriteString(",")
-			strbR.WriteString(string(strN[nPos]))
-		} else {
-			strbR.WriteString(string(strN[nPos]))
-		}
-		nPos++
+func SI(nombre interface{}) string {
+	var str string
+	switch n := nombre.(type) {
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+		str = fmt.Sprintf("%d", n)
+	case float32, float64:
+		str = fmt.Sprintf("%.f", n)
+	default:
+		return "Invalid input"
 	}
 
-	strN = strbR.String()
-	strN = ReverseString(strN)
+	negative := false
+	if str[0] == '-' {
+		negative = true
+		str = str[1:]
+	}
 
-	return strN
+	// Insert commas every three digits from the right
+	var formatted string
+	for i, digit := range str {
+		if i > 0 && (len(str)-i)%3 == 0 {
+			formatted += ","
+		}
+		formatted += string(digit)
+	}
+
+	if negative {
+		formatted = "-" + formatted
+	}
+
+	return formatted
 }
 
 // This function takes a string and returns its reverse
