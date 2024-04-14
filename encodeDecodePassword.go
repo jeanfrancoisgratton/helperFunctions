@@ -52,15 +52,13 @@ func GetPassword(prompt string) string {
 
 // Quick functions to encode and decode strings
 // This is based on my encryption-decryption tool : https://github.com/jeanfrancoisgratton/encdec
-// func EncodeString(string2encode string, privateKey string) string {
-func EncodeString(string2encode string) string {
-	// For some reason, the block below does not work, so I've commented it, for now
-	//// privateKey is optional here
-	//if len(privateKey) != 32 {
-	//	// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
-	//	privateKey = "secret key 2 encrypt and decrypt"
-	//}
-	privateKey := "secret key 2 encrypt and decrypt"
+func EncodeString(string2encode string, privateKey string) string {
+	//func EncodeString(string2encode string) string {
+	// privateKey is optional here
+	if len(privateKey) != 32 {
+		// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
+		privateKey = "secret key 2 encrypt and decrypt"
+	}
 
 	key := []byte(privateKey)
 	plaintext := []byte(string2encode)
@@ -82,15 +80,12 @@ func EncodeString(string2encode string) string {
 	return base64.URLEncoding.EncodeToString(ciphertext)
 }
 
-// func DecodeString(encodedstring string, privateKey string) string {
-func DecodeString(encodedstring string) string {
-	// For some reason, the block below does not work, so I've commented it, for now
-	//// privateKey is optional here
-	//if len(privateKey) != 32 {
-	//	// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
-	//	privateKey = "secret key 2 encrypt and decrypt"
-	//}
-	privateKey := "secret key 2 encrypt and decrypt"
+func DecodeString(encodedstring string, privateKey string) string {
+	// privateKey is optional here
+	if len(privateKey) != 32 {
+		// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
+		privateKey = "secret key 2 encrypt and decrypt"
+	}
 
 	key := []byte(privateKey)
 	ciphertext, _ := base64.URLEncoding.DecodeString(encodedstring)
