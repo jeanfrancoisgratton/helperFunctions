@@ -57,9 +57,11 @@ func ReverseString(s string) (result string) {
 	return
 }
 
+// Prints the changelog of the calling tool
 func ChangeLog(cl string, clear bool) {
 	if clear {
 		ClearTTY()
 	}
 	fmt.Print(cl)
 }
+

@@ -1,7 +1,8 @@
 github.com/jwalton/gchalk v1.3.0 h1:uTfAaNexN8r0I9bioRTksuT8VGjrPs9YIXR1PQbtX/Q=
 github.com/jwalton/gchalk v1.3.0/go.mod h1:ytRlj60R9f7r53IAElbpq4lVuPOPNg2J4tJcCxtFqr8=
-github.com/jwalton/go-supportscolor v1.1.0 h1:HsXFJdMPjRUAx8cIW6g30hVSFYaxh9yRQwEWgkAR7lQ=
 github.com/jwalton/go-supportscolor v1.1.0/go.mod h1:hFVUAZV2cWg+WFFC4v8pT2X/S2qUUBYMioBD9AINXGs=
+github.com/jwalton/go-supportscolor v1.2.0 h1:g6Ha4u7Vm3LIsQ5wmeBpS4gazu0UP1DRDE8y6bre4H8=
+github.com/jwalton/go-supportscolor v1.2.0/go.mod h1:hFVUAZV2cWg+WFFC4v8pT2X/S2qUUBYMioBD9AINXGs=
 golang.org/x/crypto v0.22.0 h1:g1v0xeRhjcugydODzvb3mEM9SQ0HGp9s/nh3COQ/C30=
 golang.org/x/crypto v0.22.0/go.mod h1:vr6Su+7cTlO45qkww3VDJlzDn0ctJvRgYbC2NvXHt+M=
 golang.org/x/sys v0.0.0-20201119102817-f84b799fce68/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
