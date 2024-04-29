@@ -73,3 +73,23 @@ func GetStringSliceFromPrompt(prompt string) []string {
 	}
 	return slice
 }
+
+// This one is more generic in the sense that it should be used whenever
+// We cannot know before run-time what type of value should be expected
+func GetValueFromPrompt(prompt string) interface{} {
+	input := GetStringValFromPrompt(prompt)
+
+	if num, err := strconv.ParseUint(input, 10, 64); err == nil {
+		return uint(num)
+	}
+	if num, err := strconv.ParseInt(input, 10, 64); err == nil {
+		return int(num)
+	}
+	if val, err := strconv.ParseBool(input); err == nil {
+		return val
+	}
+
+	// If none of the above conversions work, return the input as a string
+	return input
+
+}
