@@ -6,9 +6,9 @@ This package provides functions that I have been using all over my various tools
 
 ## Overview
 
-This package is currently divided in 3 files; if the scope of the project expands (and I expect it to expand, at some point), we might be talking about sub-packages here.
+This package is currently divided in 4 files; if the scope of the project expands (and I expect it to expand, at some point), we might be talking about sub-packages here.
 
-For now, we have 3 files, with a specific area of responsibility:
+For now, we have 4 files, with a specific area of responsibility:
 
 | File                    | Area / coverage                                                                                                                                    |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
