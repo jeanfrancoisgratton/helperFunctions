@@ -19,6 +19,10 @@ For now, we have 4 files, with a specific area of responsibility:
 
 This is basic, for now. I really intend on expanding on this package, and eventually have it documented on pkg.go.dev/
 
+As of v1.5.0 of this package, there is now a new subpackage called `pager` to paginate text files or blocks pretty much the way the UNIX "more" utility does, with extra functionalities.
+The `pager` documentation is located [here](pager/README.md).
+
+
 ## Installation
 A simple `go get github.com/jeanfrancoisgratton/functionHelpers` and we're done.
 
