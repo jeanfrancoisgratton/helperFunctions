@@ -11,7 +11,7 @@ import (
 // This function here reads a text file and converts it in a single string (text),
 // and then call upon Pager. If you already have a text block to paginate, all you need then is to call
 // NewPager with the text block and the desired terminal height (a value of 0 means: default term height)
-func FilePager(fileFullPath string, terminalHeight int) *cerr.CustomError {
+func PaginateFromFile(fileFullPath string, pageHeight int) *cerr.CustomError {
 	data, err := os.ReadFile(fileFullPath)
 	if err != nil {
 		return &cerr.CustomError{Title: "Error reading the file:", Message: err.Error()}
@@ -19,7 +19,7 @@ func FilePager(fileFullPath string, terminalHeight int) *cerr.CustomError {
 
 	// Initialize the pager with the text and desired page height
 	text := string(data)
-	p, err := NewPager(text, terminalHeight) // 0 uses the default terminal height - 1
+	p, err := NewPager(text, pageHeight) // 0 uses the default terminal height - 1
 	if err != nil {
 		return err
 	}
