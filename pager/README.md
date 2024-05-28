@@ -21,7 +21,7 @@ As simple as `go get github.com/jeanfrancoisgratton/helperFunctions/pager` and a
 As mentioned, the source can be either a text file that gets read, or a provided text block
 
 ### Paginating a text file
-All you need to do to paginate a text file is to call `PaginateFromFile(_file_, _pageHeight_)` where:
+All you need to do to paginate a text file is to call `PaginateFromFile(<i>file, pageHeight</i>)` where:
 - file is the path to the file to be read and paginated
 - pageHeight is the desired page height. A value of zero means you'd use the current terminal's height
 
