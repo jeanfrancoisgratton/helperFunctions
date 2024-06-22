@@ -19,12 +19,12 @@ import (
 func GetFStype(mountpoint string) (string, *cerr.CustomError) {
 	switch os := runtime.GOOS; os {
 	case "darwin":
-		return getMacOSMountPointType (mountpoint)
+		return getMacOSMountPointType(mountpoint)
 	case "linux":
-		return getLinuxMountPointType (mountpoint)
+		return getLinuxMountPointType(mountpoint)
 	default:
 		return "", &cerr.CustomError{Fatality: cerr.Continuable,
-			Title: "Unsupported operating system", Message: "os type: " + os }
+			Title: "Unsupported operating system", Message: "os type: " + os,
 		}
 	}
 }
@@ -61,7 +61,7 @@ func getMacOSMountPointType(mountpoint string) (string, *cerr.CustomError) {
 	var stat syscall.Statfs_t
 	err := syscall.Statfs(mountpoint, &stat)
 	if err != nil {
-		return "", &cerr.CustomError { Title: "Error with Stats syscall :", Message: err.Error() }
+		return "", &cerr.CustomError{Title: "Error with Stats syscall :", Message: err.Error()}
 	}
 
 	return fmt.Sprintf("%s", stat.Fstypename), nil
