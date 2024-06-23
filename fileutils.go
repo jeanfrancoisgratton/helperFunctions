@@ -6,16 +6,14 @@
 package helperFunctions
 
 import (
-	"fmt"
 	cerr "github.com/jeanfrancoisgratton/customError"
 	"os"
 	"runtime"
 	"strings"
-	"syscall"
 )
 
 // Check which type of filesystem the mountpoint is.
-// Currently only supports MacOS and linux
+// Currently only supports MacOS and linux; I've broken my Windows test VM and have no time for it
 func GetFStype(mountpoint string) (string, *cerr.CustomError) {
 	switch os := runtime.GOOS; os {
 	case "darwin":
@@ -31,10 +29,6 @@ func GetFStype(mountpoint string) (string, *cerr.CustomError) {
 
 // Gets the type of the filesystem by reading the /proc/mounts
 func getLinuxMountPointType(mountpoint string) (string, *cerr.CustomError) {
-	if runtime.GOOS != "linux" {
-		return "", &cerr.CustomError{Fatality: cerr.Continuable, Title: "OS not supported"}
-	}
-
 	data, err := os.ReadFile("/proc/mounts")
 	if err != nil {
 		return "", &cerr.CustomError{Title: "Error reading /proc/mounts"}
@@ -58,11 +52,29 @@ func getLinuxMountPointType(mountpoint string) (string, *cerr.CustomError) {
 }
 
 func getMacOSMountPointType(mountpoint string) (string, *cerr.CustomError) {
-	var stat syscall.Statfs_t
-	err := syscall.Statfs(mountpoint, &stat)
-	if err != nil {
-		return "", &cerr.CustomError{Title: "Error with Stats syscall :", Message: err.Error()}
-	}
 
-	return fmt.Sprintf("%s", stat.Fstypename), nil
+	return "", &cerr.CustomError{Fatality: cerr.Continuable, Title: "WIP", Message: "Unsupported for now.. stay tuned"}
+
+	//var stat unix.Statfs_t
+	//err := unix.Statfs(mountpoint, &stat)
+	//if err != nil {
+	//	return "", &cerr.CustomError{Title: "Error with Statfs syscall", Message: err.Error()}
+	//}
+	//
+	//// The Type field indicates the file system type
+	//fsType := stat.Type
+	//
+	//// Mapping file system type to a human-readable string
+	//fsTypeName := ""
+	//switch fsType {
+	//case unix.MNT_ASYNC:
+	//	fsTypeName = "async"
+	//case unix.MNT_LOCAL:
+	//	fsTypeName = "local"
+	//// Add more cases as needed for different file system types
+	//default:
+	//	fsTypeName = fmt.Sprintf("unknown (%d)", fsType)
+	//}
+	//
+	//return fsTypeName, nil
 }
