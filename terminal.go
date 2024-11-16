@@ -56,5 +56,5 @@ func Yellow(sentence string) string {
 }
 
 func Blue(sentence string) string {
-	return fmt.Sprintf("%s", gchalk.WithYellow().Bold(sentence))
+	return fmt.Sprintf("%s", gchalk.WithBlue().Bold(sentence))
 }

@@ -1,6 +1,6 @@
 module github.com/jeanfrancoisgratton/helperFunctions
 
-go 1.22.5
+go 1.23.3
 
 require (
 	github.com/jeanfrancoisgratton/customError v1.7.2
