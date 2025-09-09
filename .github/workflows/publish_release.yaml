@@ -1,0 +1,34 @@
+name: Publish Release
+
+on:
+  push:
+    tags: ['v[0-9]+\.[0-9]+\.[0-9]+.*']
+  workflow_dispatch: # Allow manual triggering from the GitHub UI
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Push tag to GitHub with the 'gh' remote
+      - name: Push tag to GitHub
+        run: |
+          git remote set-url gh git@github.com:jeanfrancoisgratton/helperFunctions.git
+          git push --follow-tags gh
+
+      # Step 3: Create Release on GitHub
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }} # Use the tag name only
+          release_name: Release ${{ github.ref_name }} # Use the tag name for release name
+          body: 'Release notes for ${{ github.ref_name }}' # Optional: Add more details if needed
+          draft: false
+          prerelease: false

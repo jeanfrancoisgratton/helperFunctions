@@ -1,0 +1,57 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - develop
+
+jobs:
+  check-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@latest
+
+      - name: Verify SemVer tag
+        id: semver
+        run: |
+          if ! [[ ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "Invalid SemVer tag."
+            exit 1
+          fi
+
+      - name: Check Release Notes
+        id: check_release_notes
+        run: |
+          if [ -f "docs/RELEASE_NOTES.md" ]; then
+            previous_notes=$(git tag -l --format='%(contents)' "${{ github.ref }}^{}")
+            current_notes=$(cat docs/RELEASE_NOTES.md)
+            if [ "$previous_notes" == "$current_notes" ]; then
+              echo "Release notes are the same as the previous release. Skipping."
+              exit 0
+            fi
+          else
+            echo "Release notes file not found. Skipping."
+            exit 0
+          fi
+
+      - name: Get Release Notes
+        id: release_notes
+        run: |
+          echo "::set-output name=notes::$(cat path/to/release_notes.md)"
+
+      - name: Create Release
+        id: create_release
+        if: steps.semver.outputs.valid && success()
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ steps.release_notes.outputs.notes }}
+          draft: false
+          prerelease: false
