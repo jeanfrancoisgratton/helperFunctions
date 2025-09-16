@@ -1,5 +1,6 @@
 | Release | Date       | Comments                                                                                                     |
 |---------|------------|--------------------------------------------------------------------------------------------------------------|
+| 2.4.0   | 2025.09.16 | Added coloured (terminal) symbols in terminal.go                                                             |
 | 2.3.1   | 2025.08.25 | Added proc information to Init()                                                                             |
 | 2.2.4   | 2025.08.14 | GO version bump to 1.25.0<br>Updated CustomError dependency (version bump)                                   |
 | 2.2.2   | 2025.08.13 | Added a ParseLevel() helper to convert a string loglevel to a LogLevelIota variable                          |
