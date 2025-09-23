@@ -14,29 +14,6 @@ import (
 	"github.com/jwalton/gchalk"
 )
 
-// ANSI color codes and escape code
-const (
-	terminalEscape = "\x1b"
-	red            = "\033[31m"
-	yellow         = "\033[33m"
-	reset          = "\033[0m"
-)
-
-// Disabled: red X
-func DisabledGlyph() string {
-	return fmt.Sprintf("%s✗%s", red, reset)
-}
-
-// Enabled: green box with white check
-func EnabledGlyph() string {
-	return "✅"
-}
-
-// Warning: yellow triangle
-func WarningGlyph() string {
-	return fmt.Sprintf("%s⚠%s", yellow, reset)
-}
-
 // TERMINAL FUNCTIONS
 func GetTerminalSize() (int, int) {
 	var size struct {

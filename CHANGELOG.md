@@ -1,5 +1,6 @@
 | Release | Date       | Comments                                                                                                     |
 |---------|------------|--------------------------------------------------------------------------------------------------------------|
+| 2.4.2   | 2025.09.23 | Moved all glyph/emoji/symbols related code in its own file                                                   |
 | 2.4.1   | 2025.09.16 | Added coloured (terminal) symbols in terminal.go                                                             |
 | 2.3.1   | 2025.08.25 | Added proc information to Init()                                                                             |
 | 2.2.4   | 2025.08.14 | GO version bump to 1.25.0<br>Updated CustomError dependency (version bump)                                   |
