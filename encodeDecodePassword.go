@@ -9,6 +9,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -32,8 +33,8 @@ func GetPassword(prompt string, debugmode bool) string {
 
 	// Restore it in the event of an interrupt.
 	// CITATION: Konstantin Shaposhnikov - https://groups.google.com/forum/#!topic/golang-nuts/kTVAbtee9UA
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, os.Kill)
+	c := make(chan os.Signal, 1) // buffered to satisfy go vet
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
 		_ = terminal.Restore(syscall.Stdin, initialTermState)
@@ -58,42 +59,50 @@ func GetPassword(prompt string, debugmode bool) string {
 // Quick functions to encode and decode strings
 // This is based on my encryption-decryption tool : https://github.com/jeanfrancoisgratton/encdec
 func EncodeString(string2encode string, privateKey string) string {
-	//func EncodeString(string2encode string) string {
-	// privateKey is optional here
-	if len(privateKey) != 32 {
-		// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
-		privateKey = "secret key 2 encrypt and decrypt"
-	}
-
-	key := []byte(privateKey)
 	plaintext := []byte(string2encode)
-
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		panic(err.Error())
-	}
+	key := sha256sum(privateKey)
 
 	ciphertext := make([]byte, aes.BlockSize+len(plaintext))
 	iv := ciphertext[:aes.BlockSize]
+
+	// rand.Reader is a cryptographically secure reader.
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		panic(err)
+	}
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
 		panic(err)
 	}
 
 	stream := cipher.NewCFBEncrypter(block, iv)
 	stream.XORKeyStream(ciphertext[aes.BlockSize:], plaintext)
 
-	return base64.URLEncoding.EncodeToString(ciphertext)
+	return base64.StdEncoding.EncodeToString(ciphertext)
 }
 
-func DecodeString(encodedstring string, privateKey string) string {
-	// privateKey is optional here
-	if len(privateKey) != 32 {
-		// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
-		privateKey = "secret key 2 encrypt and decrypt"
+// Compute the SHA256 checksum of a string
+func sha256sum(s string) []byte {
+	h := sha256.New()
+	_, err := io.WriteString(h, s)
+	if err != nil {
+		panic(err)
 	}
+	sum := h.Sum(nil)
 
-	key := []byte(privateKey)
-	ciphertext, _ := base64.URLEncoding.DecodeString(encodedstring)
+	// now, we need 32 bytes for AES-256 keys
+	// yeah, I say "*crypt" instead of "*code", but I needed 32bits...
+	key := make([]byte, 32)
+	copy(key, sum)
+
+	return key
+}
+
+// Quick functions to decode strings that were encoded by EncodeString()
+func DecodeString(encodedstring string, privateKey string) string {
+	ciphertext, _ := base64.StdEncoding.DecodeString(encodedstring)
+	key := sha256sum(privateKey)
+
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
