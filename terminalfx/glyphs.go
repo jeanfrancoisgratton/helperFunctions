@@ -3,7 +3,7 @@
 // Original timestamp: 2025/09/23 03:16
 // Original filename: /terminal-glyphs.go
 
-package helperFunctions
+package terminalfx
 
 import "fmt"
 

@@ -11,11 +11,12 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"golang.org/x/crypto/ssh/terminal"
 	"io"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 // Breaking change: if DebugMode is true, we catch the passwd in cleartext

@@ -1,14 +1,15 @@
-package helperFunctions
+package terminalfx
 
 import (
 	"bufio"
 	"fmt"
-	cerr "github.com/jeanfrancoisgratton/customError/v2"
 	"io"
 	"os"
 	"strings"
 	"syscall"
 	"unicode"
+
+	cerr "github.com/jeanfrancoisgratton/customError/v2"
 
 	"golang.org/x/term"
 )

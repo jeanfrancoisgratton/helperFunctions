@@ -3,7 +3,7 @@
 // Original timestamp: 2025/04/21 09:44
 // Original filename: /repomanagement.go
 
-package helperFunctions
+package repomanagement
 
 import (
 	"errors"

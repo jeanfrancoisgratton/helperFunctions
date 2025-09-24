@@ -3,7 +3,7 @@
 // Original filename: /terminal.go
 // Original timestamp: 2024/04/10 15:21
 
-package helperFunctions
+package terminalfx
 
 import (
 	"fmt"

@@ -7,13 +7,15 @@ package helperFunctions
 
 import (
 	"fmt"
+
+	"github.com/jeanfrancoisgratton/helperFunctions/v2/terminalfx"
 )
 
 // NUMBER FORMATTING FUNCTIONS
 // ===========================
 
 // This function was originally written in 1993, in C, by my friend Jean-François Gauthier (jief@brebis.dyndns.org)
-// I've ported it in C# in 2011. It still loosely based on J.F.Gauthier's version, somehow; credit is given where credit is due
+// I've ported it in C# in 2011. It is still loosely based on J.F.Gauthier's version, somehow; credit is given where credit is due
 // This function transforms a multi-digit number in International Notation; 1234567 thus becomes 1,234,567
 func SI(nombre interface{}) string {
 	var str string
@@ -60,8 +62,7 @@ func ReverseString(s string) (result string) {
 // Prints the changelog of the calling tool
 func ChangeLog(cl string, clear bool) {
 	if clear {
-		ClearTTY()
+		terminalfx.ClearTTY()
 	}
 	fmt.Print(cl)
 }
-

@@ -3,13 +3,14 @@
 // Original filename: /fileutils.go
 // Original timestamp: 2024/06/22 13:24
 
-package helperFunctions
+package fileutils
 
 import (
-	cerr "github.com/jeanfrancoisgratton/customError/v2"
 	"os"
 	"runtime"
 	"strings"
+
+	cerr "github.com/jeanfrancoisgratton/customError/v2"
 )
 
 // Check which type of filesystem the mountpoint is.
