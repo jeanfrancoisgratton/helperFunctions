@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"unicode"
 
-	cerr "github.com/jeanfrancoisgratton/customError/v2"
+	cerr "github.com/jeanfrancoisgratton/customError/v3"
 
 	"golang.org/x/term"
 )

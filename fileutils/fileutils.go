@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"strings"
 
-	cerr "github.com/jeanfrancoisgratton/customError/v2"
+	cerr "github.com/jeanfrancoisgratton/customError/v3"
 )
 
 // Check which type of filesystem the mountpoint is.
