@@ -11,5 +11,5 @@ require (
 
 require (
 	github.com/jwalton/go-supportscolor v1.2.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
 )

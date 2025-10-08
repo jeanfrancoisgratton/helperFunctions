@@ -31,7 +31,8 @@ func FatalSkullBonesGlyph(sentence string) string { return fmt.Sprintf("☠ %s%s
 // Go
 func GreenGoGlyph(sentence string) string { return fmt.Sprintf("🟢 %s%s", sentence, reset) }
 
-// Status / utility
+// Status / utility// InProgressChar returns a single-glyph indicator for "task in progress".
+func InProgressGlyph(sentence string) string { return fmt.Sprintf("⏳ %s%s", sentence, reset) } // U+23F3 HOURGLASS NOT DONE
 func EnabledGlyph(sentence string) string    { return fmt.Sprintf("✅ %s%s", sentence, reset) }
 func ErrorGlyph(sentence string) string      { return fmt.Sprintf("❌ %s%s", sentence, reset) }
 func WarningGlyph(sentence string) string    { return fmt.Sprintf("⚠ %s%s", sentence, reset) } // U+26A0 WARNING SIGN
@@ -59,6 +60,10 @@ func GreenOkGlyph(sentence string) string {
 
 func BlueInfoGlyph(sentence string) string {
 	return fmt.Sprintf("%s%s%s", blue, InfoGlyph(sentence))
+}
+
+func BlueInProgressGlyph(sentence string) string {
+	return fmt.Sprintf("%s%s%s", blue, InProgressGlyph(sentence))
 }
 
 func YellowTipGlyph(sentence string) string {
