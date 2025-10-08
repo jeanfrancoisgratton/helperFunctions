@@ -5,7 +5,9 @@
 
 package terminalfx
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // ANSI color codes
 const (
@@ -19,77 +21,46 @@ const (
 // ===== Base glyph functions =====
 
 // Stop signs
-func EuropeanStopPanelGlyph() string { return "⛔" } // European stop
-func AmericanStopPanelGlyph() string { return "🛑" } // American stop
+func EuropeanStopPanelGlyph(sentence string) string { return fmt.Sprintf("⛔ %s%s", sentence, reset) } // European stop
+func AmericanStopPanelGlyph(sentence string) string { return fmt.Sprintf("🛑 %s%s", sentence, reset) } // American stop
 
 // Fatal symbols
-func FatalCollisionGlyph() string  { return "💥" }
-func FatalSkullBonesGlyph() string { return "☠" }
+func FatalCollisionGlyph(sentence string) string  { return fmt.Sprintf("💥 %s%s", sentence, reset) }
+func FatalSkullBonesGlyph(sentence string) string { return fmt.Sprintf("☠ %s%s", sentence, reset) }
 
 // Go
-func GreenGoGlyph() string { return "🟢" }
+func GreenGoGlyph(sentence string) string { return fmt.Sprintf("🟢 %s%s", sentence, reset) }
 
 // Status / utility
-func EnabledGlyph() string    { return "✅" }
-func ErrorGlyph() string      { return "❌" }
-func WarningGlyph() string    { return "⚠" } // U+26A0 WARNING SIGN
-func InfoGlyph() string       { return "🛈" } // circled info (U+1F6C8)
-func NoteGlyph() string       { return "💬" } // speech bubble
-func ScrollGlyph() string     { return "📜" } // scroll/document
-func TipGlyph() string        { return "💡" }
-func LightbulbGlyph() string  { return "💡" }
-func ThumbsUpGlyph() string   { return "👍" }
-func ThumbsDownGlyph() string { return "👎" }
+func EnabledGlyph(sentence string) string    { return fmt.Sprintf("✅ %s%s", sentence, reset) }
+func ErrorGlyph(sentence string) string      { return fmt.Sprintf("❌ %s%s", sentence, reset) }
+func WarningGlyph(sentence string) string    { return fmt.Sprintf("⚠ %s%s", sentence, reset) } // U+26A0 WARNING SIGN
+func InfoGlyph(sentence string) string       { return fmt.Sprintf("🛈 %s%s", sentence, reset) } // circled info (U+1F6C8)
+func NoteGlyph(sentence string) string       { return fmt.Sprintf("💬 %s%s", sentence, reset) } // speech bubble
+func ScrollGlyph(sentence string) string     { return fmt.Sprintf("📜 %s%s", sentence, reset) } // scroll/document
+func TipGlyph(sentence string) string        { return fmt.Sprintf("💡 %s%s", sentence, reset) }
+func LightbulbGlyph(sentence string) string  { return fmt.Sprintf("💡 %s%s", sentence, reset) }
+func ThumbsUpGlyph(sentence string) string   { return fmt.Sprintf("👍 %s%s", sentence, reset) }
+func ThumbsDownGlyph(sentence string) string { return fmt.Sprintf("👎 %s%s", sentence, reset) }
 
 // ===== Colored variants =====
 
-func RedErrorGlyph() string {
-	return fmt.Sprintf("%s%s%s", red, ErrorGlyph(), reset)
+func RedErrorGlyph(sentence string) string {
+	return fmt.Sprintf("%s%s", red, ErrorGlyph(sentence))
 }
 
-func YellowWarningGlyph() string {
-	return fmt.Sprintf("%s⚠%s", yellow, reset)
+func YellowWarningGlyph(sentence string) string {
+	return fmt.Sprintf("%s⚠ %s%s", yellow, sentence, reset)
 }
 
-func GreenOkGlyph() string {
-	return fmt.Sprintf("%s%s%s", green, GreenGoGlyph(), reset)
+func GreenOkGlyph(sentence string) string {
+	return fmt.Sprintf("%s%s", green, GreenGoGlyph(sentence))
 }
 
-func BlueInfoGlyph() string {
-	return fmt.Sprintf("%s%s%s", blue, InfoGlyph(), reset)
+func BlueInfoGlyph(sentence string) string {
+	return fmt.Sprintf("%s%s%s", blue, InfoGlyph(sentence))
 }
 
-func YellowTipGlyph() string {
-	return fmt.Sprintf("%s%s%s", yellow, TipGlyph(), reset)
-}
-
-// ===== Map-based helper =====
-
-// Glyph returns the glyph string for a given kind.
-// Supported kinds: "stop-eu", "stop-us", "fatal-collision", "fatal-skull",
-// "go", "error", "info", "note", "scroll", "tip", "lightbulb",
-// "thumbs-up", "thumbs-down".
-func Glyph(kind string) string {
-	glyphs := map[string]string{
-		"enabled":         EnabledGlyph(),
-		"warning":         WarningGlyph(),
-		"stop-eu":         EuropeanStopPanelGlyph(),
-		"stop-us":         AmericanStopPanelGlyph(),
-		"fatal-collision": FatalCollisionGlyph(),
-		"fatal-skull":     FatalSkullBonesGlyph(),
-		"go":              GreenGoGlyph(),
-		"error":           ErrorGlyph(),
-		"info":            InfoGlyph(),
-		"note":            NoteGlyph(),
-		"scroll":          ScrollGlyph(),
-		"tip":             TipGlyph(),
-		"lightbulb":       LightbulbGlyph(),
-		"thumbs-up":       ThumbsUpGlyph(),
-		"thumbs-down":     ThumbsDownGlyph(),
-	}
-
-	if g, ok := glyphs[kind]; ok {
-		return g
-	}
-	return "?" // fallback if unknown
+func YellowTipGlyph(sentence string) string {
+	return fmt.Sprintf("%s%s%s", yellow, TipGlyph(sentence))
 }

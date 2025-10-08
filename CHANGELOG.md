@@ -1,5 +1,6 @@
 | Release | Date        | Comments                                                                                                     |
 |---------|-------------|--------------------------------------------------------------------------------------------------------------|
+| 3.0.4   | 2025.10.06  | Simplified glyph handling and printing                                                                       |
 | 3.0.3   | 2025.10.06  | Removed mentions of customError/v2<br>GO version bump: 1.25.2                                                |
 | 3.0.2   | 2025.09.26  | **Breaking change** : terminal functions are now in their own subpackage                                     |
 | 2.4.1   | 2025.09.16  | Added coloured (terminal) symbols in terminal.go                                                             |
