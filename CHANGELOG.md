@@ -1,5 +1,6 @@
 | Release | Date       | Comments                                                                                                     |
 |---------|------------|--------------------------------------------------------------------------------------------------------------|
+| 3.0.6   | 2025.11.09 | Added an optional prefix option for each logfile entry                                                       |
 | 3.0.5   | 2025.10.08 | Added a new "in progress" glyph                                                                              |
 | 3.0.4   | 2025.10.07 | Simplified glyph handling and printing                                                                       |
 | 3.0.3   | 2025.10.06 | Removed mentions of customError/v2<br>GO version bump: 1.25.2                                                |

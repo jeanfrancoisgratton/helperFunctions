@@ -1,3 +1,4 @@
+// Package logging
 // logging/types.go
 // helperFunctions - logging subpackage
 // Refactor: Aug 13, 2025 (USER outside severity ladder) + ParseLevel()
@@ -7,7 +8,9 @@
 // - Fixed levels owned by the package: None, Error, Info, Debug.
 // - USER messages are *outside* the ladder: they log whenever level != None.
 // - Format: TIMESTAMP [HEADER] MESSAGE:
-//   - HEADER = [DEBUG] | [INFO] | [ERROR] | [<user header>]
+// - HEADER = [DEBUG] | [INFO] | [ERROR] | [<user header>]
+// Optionally, if the "LinePrefix" variable is set, the prefix will be pre-pended right before the message
+
 package logging
 
 import (
@@ -71,4 +74,5 @@ var (
 	defaultUserHeader atomic.Value // holds string, defaults to "[USER]"
 	DisplayPID        bool
 	DisplayExecName   bool
+	LogEntryPrefix    atomic.Value
 )

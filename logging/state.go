@@ -10,17 +10,19 @@ package logging
 import (
 	"log"
 	"os"
-	"time"
 )
 
-// Init sets output, global threshold, and default user header.
+// InitWithPrefix :
+// In v4, this will be the new implementation of Init, albeit with most of the options passed in a struct
+// The function sets output, global threshold, default user header. log entry prefix, etc
 // path "-" or "" -> stdout; otherwise file (0640) is opened/created.
 // Re-invocation rotates to the new target.
-func Init(path string, level LogLevel, userHeader string, displayExecName, displayPID bool) error {
+func InitWithPrefix(path string, level LogLevel, entryPrefix string, userHeader string, displayExecName, displayPID bool) error {
 	var err error
 	initOnce.Do(func() {
 		globalLevel.Store(int32(None))
 		defaultUserHeader.Store("[USER]")
+		LogEntryPrefix.Store(entryPrefix)
 	})
 
 	// Close previously opened file if any (except stdout)
@@ -55,6 +57,10 @@ func Init(path string, level LogLevel, userHeader string, displayExecName, displ
 	return nil
 }
 
+func Init(path string, level LogLevel, userHeader string, displayExecName, displayPID bool) error {
+	return InitWithPrefix(path, level, "", userHeader, displayExecName, displayPID)
+}
+
 // Close closes the underlying file if we opened one. Safe to call multiple times.
 func Close() {
 	if logFile != nil {
@@ -77,31 +83,4 @@ func Enabled(l LogLevel) bool {
 		return false
 	}
 	return l <= cur
-}
-
-// userEnabled is the gating rule for Userf:
-// log if global level != None (outside severity ladder).
-func userEnabled() bool {
-	return GetLevel() != None
-}
-
-// emit writes a single, already-gated line.
-// header must include brackets (e.g., "[INFO]"); message is the final text.
-func emit(header string, message string) {
-	if logger == nil {
-		logger = log.New(os.Stdout, "", 0)
-	}
-	ts := time.Now().Format(timeLayout)
-	logger.Printf("%s %s %s", ts, header, message)
-}
-
-func currentUserHeader() string {
-	v := defaultUserHeader.Load()
-	if v == nil {
-		return "[USER]"
-	}
-	if s, ok := v.(string); ok && s != "" {
-		return s
-	}
-	return "[USER]"
 }
