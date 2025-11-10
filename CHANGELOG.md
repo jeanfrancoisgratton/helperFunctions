@@ -1,5 +1,6 @@
 | Release | Date       | Comments                                                                                                     |
 |---------|------------|--------------------------------------------------------------------------------------------------------------|
+| 3.1.0   | 2025.11.10 | Swapped parameters in most glyph functions in terminalfx so that the text will stay in the usual white color |
 | 3.0.8   | 2025.11.10 | Added another option to prepend the messsage text with the username calling the tool                         |
 | 3.0.6   | 2025.11.09 | Added an optional prefix option for each logfile entry                                                       |
 | 3.0.5   | 2025.10.08 | Added a new "in progress" glyph                                                                              |

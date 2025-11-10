@@ -46,7 +46,7 @@ func InitExtended(path string, level LogLevel, entryPrefix string, userHeader st
 	var err error
 	initOnce.Do(func() {
 		globalLevel.Store(int32(None))
-		defaultUserHeader.Store("[USER]")
+		defaultUserHeader.Store(userHeader)
 		LogEntryPrefix.Store(entryPrefix)
 		if displayCurrentUser {
 			cUsr, err := user.Current()
@@ -77,12 +77,6 @@ func InitExtended(path string, level LogLevel, entryPrefix string, userHeader st
 
 	logger = log.New(out, "", 0) // we format lines ourselves
 	SetLevel(level)
-
-	if userHeader == "" {
-		defaultUserHeader.Store("[USER]")
-	} else {
-		defaultUserHeader.Store(userHeader)
-	}
 
 	DisplayPID = displayPID
 	DisplayExecName = displayExecName
