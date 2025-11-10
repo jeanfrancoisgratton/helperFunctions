@@ -13,9 +13,18 @@ import (
 	"os/user"
 )
 
+// Init : *DEPRECATION NOTICE*
+// This function signature will change in v4.
+// For backward compatibility, Init() right now uses the legacy signature and calls the next-gen
+// Version with empty/null/false values for the extended parameters.
+// If you wish to use the extended parameters, use InitExtended()
+func Init(path string, level LogLevel, userHeader string, displayExecName, displayPID bool) error {
+	return InitExtended(path, level, "", userHeader, false, displayExecName, displayPID)
+}
+
 // InitWithPrefix :
 // In v4, this will be the new implementation of Init, albeit with most of the options passed in a struct
-// The function sets output, global threshold, default user header. log entry prefix, etc
+// The function sets output, global threshold, default user header. log entry prefix, etc.
 // path "-" or "" -> stdout; otherwise file (0640) is opened/created.
 // Re-invocation rotates to the new target.
 
@@ -32,7 +41,7 @@ import (
 // If this package is called to log into, say, /var/log/myapp.log, we could safely assume that displayExecName here
 // Would be set to "myapp", not really useful, right ?
 
-func InitWithPrefix(path string, level LogLevel, entryPrefix string, userHeader string,
+func InitExtended(path string, level LogLevel, entryPrefix string, userHeader string,
 	displayCurrentUser bool, displayExecName, displayPID bool) error {
 	var err error
 	initOnce.Do(func() {
@@ -79,10 +88,6 @@ func InitWithPrefix(path string, level LogLevel, entryPrefix string, userHeader 
 	DisplayExecName = displayExecName
 
 	return nil
-}
-
-func Init(path string, level LogLevel, userHeader string, displayExecName, displayPID bool) error {
-	return InitWithPrefix(path, level, "", userHeader, false, displayExecName, displayPID)
 }
 
 // Close closes the underlying file if we opened one. Safe to call multiple times.
