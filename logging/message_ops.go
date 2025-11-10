@@ -15,11 +15,20 @@ import (
 	"time"
 )
 
+// formatMessage : this is where we format the log entry line
+// The format is <PREFIX> (USERNAME) PROCNAME (PID) MESSAGE ARGS
+// PREFIX, USERNAME, PROCNAME and PID are optional
 func formatMessage(msg string, args ...any) string {
 	procInfo := ""
+	prefixline := ""
+	eUser := ""
 
-	if prefixline, _ := LogEntryPrefix.Load().(string); prefixline != "" {
-		msg = prefixline + " " + msg
+	if prefixline, _ = LogEntryPrefix.Load().(string); prefixline != "" {
+		prefixline = "<" + prefixline + ">"
+	}
+
+	if eUser, _ = EffectiveUser.Load().(string); eUser != "" {
+		eUser = "(" + eUser + ")"
 	}
 
 	if DisplayExecName {
@@ -33,7 +42,7 @@ func formatMessage(msg string, args ...any) string {
 		}
 	}
 	if procInfo != "" {
-		msg = fmt.Sprintf("%s %s >", procInfo, msg)
+		msg = fmt.Sprintf("%s %s %s %s >", prefixline, eUser, procInfo, msg)
 	}
 
 	if len(args) == 0 {

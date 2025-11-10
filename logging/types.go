@@ -75,4 +75,5 @@ var (
 	DisplayPID        bool
 	DisplayExecName   bool
 	LogEntryPrefix    atomic.Value
+	EffectiveUser     atomic.Value
 )
