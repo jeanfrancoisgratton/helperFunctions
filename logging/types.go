@@ -9,7 +9,6 @@
 // - USER messages are *outside* the ladder: they log whenever level != None.
 // - Format: TIMESTAMP [HEADER] MESSAGE:
 // - HEADER = [DEBUG] | [INFO] | [ERROR] | [<user header>]
-// Optionally, if the "LinePrefix" variable is set, the prefix will be pre-pended right before the message
 
 package logging
 
@@ -21,8 +20,27 @@ import (
 	"sync/atomic"
 )
 
-// Timestamp layout is used by emit() in state.go
-const timeLayout = "2006-01-02 15:04:05"
+var (
+	logger            *log.Logger
+	logFile           *os.File
+	initOnce          sync.Once
+	globalLevel       atomic.Int32 // default 0 (None)
+	defaultUserHeader atomic.Value // holds string, defaults to "[USER]"
+	displayPID        bool
+	displayExecName   bool
+	LogEntryPrefix    atomic.Value
+	EffectiveUser     atomic.Value
+)
+
+// LogInitOptions : an easy way to future-proof the logging facilities
+// This struct will be passed as a param to Init(), so we can extend it at will without breaking the package
+type LogInitOptions struct {
+	EntryPrefix        string // Logfile entry prefix (after the timestamp and loglevel), default ""
+	UserHeader         string // Header to use when loglevel set to USER, default ""
+	DisplayCurrentUser bool   // Username executing the calling process, default false
+	DisplayExecName    bool   // Display the calling executable name, default false
+	DisplayPID         bool   // Display the calling ProcessID (PID), default false
+}
 
 // LogLevel ordering: None < Error < Info < Debug
 type LogLevel int32
@@ -34,8 +52,8 @@ const (
 	Debug                 // Debugf + Infof + Errorf
 )
 
-func (l LogLevel) String() string {
-	switch l {
+func (ll LogLevel) String() string {
+	switch ll {
 	case None:
 		return "None"
 	case Error:
@@ -65,15 +83,3 @@ func ParseLevel(s string) LogLevel {
 		return None
 	}
 }
-
-var (
-	logger            *log.Logger
-	logFile           *os.File
-	initOnce          sync.Once
-	globalLevel       atomic.Int32 // default 0 (None)
-	defaultUserHeader atomic.Value // holds string, defaults to "[USER]"
-	DisplayPID        bool
-	DisplayExecName   bool
-	LogEntryPrefix    atomic.Value
-	EffectiveUser     atomic.Value
-)
