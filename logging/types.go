@@ -4,7 +4,6 @@
 // Refactor: Aug 13, 2025 (USER outside severity ladder) + ParseLevel()
 // File: logging/types.go
 //
-// - No dependency on customError: callers pass plain strings.
 // - Fixed levels owned by the package: None, Error, Info, Debug.
 // - USER messages are *outside* the ladder: they log whenever level != None.
 // - Format: TIMESTAMP [HEADER] MESSAGE:

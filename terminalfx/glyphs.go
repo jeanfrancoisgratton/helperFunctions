@@ -24,7 +24,9 @@ func EuropeanStopSign(sentence string) string { return fmt.Sprintf("⛔ %s%s", r
 func AmericanStopSign(sentence string) string { return fmt.Sprintf("🛑 %s%s", reset, sentence) }
 
 // Fatal error signs
-func BombSign(sentence string, coloured bool) string { return fmt.Sprintf("💥 %s%s", reset, sentence) }
+func BombSign(sentence string, coloured bool) string {
+	return fmt.Sprintf("💥 %s%s", reset, sentence)
+}
 
 func SkullBonesSign(sentence string) string { return fmt.Sprintf("☠ %s%s", reset, sentence) }
 
