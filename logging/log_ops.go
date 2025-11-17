@@ -1,17 +1,9 @@
-// logging/logger.go
-// helperFunctions - logging subpackage
-// Refactor: Aug 13, 2025 (USER outside severity ladder)
-// File: logging/logger.go
-//
-// Exported helpers used by callers.
-// Format: TIMESTAMP [HEADER] MESSAGE:
-package logging
+// helperFunctions
+// Written by J.F. Gratton <jean-francois@famillegratton.net>
+// Original timestamp: 2025/11/09 10:58
+// Original filename: logging/log_ops.go
 
-import (
-	"fmt"
-	"os"
-	"path/filepath"
-)
+package logging
 
 // Debugf emits when level >= Debug.
 func Debugf(msg string, args ...any) {
@@ -53,26 +45,4 @@ func Userf(msg string, header string, args ...any) {
 		h = "[" + h + "]"
 	}
 	emit(h, formatMessage(msg, args...))
-}
-
-func formatMessage(msg string, args ...any) string {
-	procInfo := ""
-	if DisplayExecName {
-		procInfo = filepath.Base(os.Args[0])
-		if DisplayPID {
-			procInfo = fmt.Sprintf("%s (PID %d)", procInfo, os.Getpid())
-		}
-	} else {
-		if DisplayPID {
-			procInfo = fmt.Sprintf("PID %d", os.Getpid())
-		}
-	}
-	if procInfo != "" {
-		msg = fmt.Sprintf("%s %s >", procInfo, msg)
-	}
-
-	if len(args) == 0 {
-		return msg
-	}
-	return fmt.Sprintf(msg, args...)
 }

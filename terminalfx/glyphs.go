@@ -18,54 +18,31 @@ const (
 	reset  = "\033[0m"
 )
 
-// ===== Base glyph functions =====
-
 // Stop signs
-func EuropeanStopPanelGlyph(sentence string) string { return fmt.Sprintf("⛔ %s%s", sentence, reset) } // European stop
-func AmericanStopPanelGlyph(sentence string) string { return fmt.Sprintf("🛑 %s%s", sentence, reset) } // American stop
+func EuropeanStopSign(sentence string) string { return fmt.Sprintf("⛔ %s%s", reset, sentence) }
 
-// Fatal symbols
-func FatalCollisionGlyph(sentence string) string  { return fmt.Sprintf("💥 %s%s", sentence, reset) }
-func FatalSkullBonesGlyph(sentence string) string { return fmt.Sprintf("☠ %s%s", sentence, reset) }
+func AmericanStopSign(sentence string) string { return fmt.Sprintf("🛑 %s%s", reset, sentence) }
 
-// Go
-func GreenGoGlyph(sentence string) string { return fmt.Sprintf("🟢 %s%s", sentence, reset) }
+// Fatal error signs
+func BombSign(sentence string, coloured bool) string {
+	return fmt.Sprintf("💥 %s%s", reset, sentence)
+}
+
+func SkullBonesSign(sentence string) string { return fmt.Sprintf("☠ %s%s", reset, sentence) }
+
+// Accepted/denied
+func EnabledSign(sentence string) string { return fmt.Sprintf("✅ %s%s", reset, sentence) }
+func ErrorSign(sentence string) string   { return fmt.Sprintf("❌ %s%s", reset, sentence) }
 
 // Status / utility// InProgressChar returns a single-glyph indicator for "task in progress".
-func InProgressGlyph(sentence string) string { return fmt.Sprintf("⏳ %s%s", sentence, reset) } // U+23F3 HOURGLASS NOT DONE
-func EnabledGlyph(sentence string) string    { return fmt.Sprintf("✅ %s%s", sentence, reset) }
-func ErrorGlyph(sentence string) string      { return fmt.Sprintf("❌ %s%s", sentence, reset) }
-func WarningGlyph(sentence string) string    { return fmt.Sprintf("⚠ %s%s", sentence, reset) } // U+26A0 WARNING SIGN
-func InfoGlyph(sentence string) string       { return fmt.Sprintf("🛈 %s%s", sentence, reset) } // circled info (U+1F6C8)
-func NoteGlyph(sentence string) string       { return fmt.Sprintf("💬 %s%s", sentence, reset) } // speech bubble
-func ScrollGlyph(sentence string) string     { return fmt.Sprintf("📜 %s%s", sentence, reset) } // scroll/document
-func TipGlyph(sentence string) string        { return fmt.Sprintf("💡 %s%s", sentence, reset) }
-func LightbulbGlyph(sentence string) string  { return fmt.Sprintf("💡 %s%s", sentence, reset) }
-func ThumbsUpGlyph(sentence string) string   { return fmt.Sprintf("👍 %s%s", sentence, reset) }
-func ThumbsDownGlyph(sentence string) string { return fmt.Sprintf("👎 %s%s", sentence, reset) }
+func GreenGoSign(sentence string) string { return fmt.Sprintf("🟢 %s%s", reset, sentence) }
 
-// ===== Colored variants =====
-
-func RedErrorGlyph(sentence string) string {
-	return fmt.Sprintf("%s%s", red, ErrorGlyph(sentence))
-}
-
-func YellowWarningGlyph(sentence string) string {
-	return fmt.Sprintf("%s⚠ %s%s", yellow, sentence, reset)
-}
-
-func GreenOkGlyph(sentence string) string {
-	return fmt.Sprintf("%s%s", green, GreenGoGlyph(sentence))
-}
-
-func BlueInfoGlyph(sentence string) string {
-	return fmt.Sprintf("%s%s%s", blue, InfoGlyph(sentence))
-}
-
-func BlueInProgressGlyph(sentence string) string {
-	return fmt.Sprintf("%s%s%s", blue, InProgressGlyph(sentence))
-}
-
-func YellowTipGlyph(sentence string) string {
-	return fmt.Sprintf("%s%s%s", yellow, TipGlyph(sentence))
-}
+func InProgressSign(sentence string) string { return fmt.Sprintf("⏳ %s%s", reset, sentence) } // U+23F3 HOURGLASS NOT DONE
+func WarningSign(sentence string) string    { return fmt.Sprintf("⚠ %s%s", reset, sentence) } // U+26A0 WARNING SIGN
+func InfoSign(sentence string) string       { return fmt.Sprintf("🛈 %s%s", reset, sentence) } // circled info (U+1F6C8)
+func NoteSign(sentence string) string       { return fmt.Sprintf("💬 %s%s", reset, sentence) } // speech bubble
+func ScrollSign(sentence string) string     { return fmt.Sprintf("📜 %s%s", reset, sentence) } // scroll/document
+func TipSign(sentence string) string        { return fmt.Sprintf("💡 %s%s", reset, sentence) }
+func LightbulbSign(sentence string) string  { return fmt.Sprintf("💡 %s%s", reset, sentence) }
+func ThumbsUpSign(sentence string) string   { return fmt.Sprintf("👍 %s%s", reset, sentence) }
+func ThumbsDownSign(sentence string) string { return fmt.Sprintf("👎 %s%s", reset, sentence) }
