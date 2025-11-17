@@ -1,6 +1,6 @@
 // helperFunctions
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
-// Original filename: /prompt4Type.go
+// Original filename: /prompt4Types.go
 // Original timestamp: 2024/04/10 15:23
 
 package helperFunctions
@@ -14,6 +14,7 @@ import (
 )
 
 // Getting typed values from prompt
+
 func GetStringValFromPrompt(prompt string) string {
 	inputScanner := bufio.NewScanner(os.Stdin)
 	fmt.Printf("%s", prompt)

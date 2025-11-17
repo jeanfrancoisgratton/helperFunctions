@@ -4,7 +4,7 @@
 // Original timestamp: 2025/08/13 22:51
 // Original filename: logging/state.go
 //
-// Init/Close and global state helpers.
+
 package logging
 
 import (
@@ -13,33 +13,33 @@ import (
 	"os/user"
 )
 
-// InitWithPrefix :
-// In v4, this will be the new implementation of Init, albeit with most of the options passed in a struct
-// The function sets output, global threshold, default user header. log entry prefix, etc
+// Init :
+// The function sets output, global threshold, default user header. log entry prefix, etc.
 // path "-" or "" -> stdout; otherwise file (0640) is opened/created.
 // Re-invocation rotates to the new target.
 
 // To initialize the log facilities, you set the following variables
 // path							:-> the path to the logfile
 // level						:-> the loglevel (none, debug, info, error, user)
-// entryPrefix					:-> a prefix to add before every log entry
-// userHeader					:-> a user-defined prefix to add if the loglevel is set to USER
-// displayCurrentUser (boolean)	:-> the user currently running the tool
-// displayExecName (boolean)	:-> display the executable name in the log entry
-// displayPID (boolean) 		:-> display the process PID
+
+// The other parameters are set with the LogInitOptions structure, which initializes the following members:
+// EntryPrefix					:-> a prefix to add before every log entry
+// UserHeader					:-> a user-defined prefix to add if the loglevel is set to USER
+// DisplayCurrentUser (boolean)	:-> the user currently running the tool
+// DisplayExecName (boolean)	:-> display the executable name in the log entry
+// DisplayPID (boolean) 		:-> display the process PID
 
 // displayExecName and displayPID might not be relevant for app-specific logfiles. In other words:
 // If this package is called to log into, say, /var/log/myapp.log, we could safely assume that displayExecName here
 // Would be set to "myapp", not really useful, right ?
 
-func InitWithPrefix(path string, level LogLevel, entryPrefix string, userHeader string,
-	displayCurrentUser bool, displayExecName, displayPID bool) error {
+func Init(path string, level LogLevel, logOptions LogInitOptions) error {
 	var err error
 	initOnce.Do(func() {
 		globalLevel.Store(int32(None))
-		defaultUserHeader.Store("[USER]")
-		LogEntryPrefix.Store(entryPrefix)
-		if displayCurrentUser {
+		defaultUserHeader.Store(logOptions.UserHeader)
+		LogEntryPrefix.Store(logOptions.EntryPrefix)
+		if logOptions.DisplayCurrentUser {
 			cUsr, err := user.Current()
 			if err != nil {
 				EffectiveUser.Store("")
@@ -69,20 +69,10 @@ func InitWithPrefix(path string, level LogLevel, entryPrefix string, userHeader 
 	logger = log.New(out, "", 0) // we format lines ourselves
 	SetLevel(level)
 
-	if userHeader == "" {
-		defaultUserHeader.Store("[USER]")
-	} else {
-		defaultUserHeader.Store(userHeader)
-	}
-
-	DisplayPID = displayPID
-	DisplayExecName = displayExecName
+	displayPID = logOptions.DisplayPID
+	displayExecName = logOptions.DisplayExecName
 
 	return nil
-}
-
-func Init(path string, level LogLevel, userHeader string, displayExecName, displayPID bool) error {
-	return InitWithPrefix(path, level, "", userHeader, false, displayExecName, displayPID)
 }
 
 // Close closes the underlying file if we opened one. Safe to call multiple times.

@@ -5,6 +5,7 @@
 //
 // Exported helpers used by callers.
 // Format: TIMESTAMP [HEADER] MESSAGE:
+
 package logging
 
 import (
@@ -31,18 +32,18 @@ func formatMessage(msg string, args ...any) string {
 		eUser = "(" + eUser + ")"
 	}
 
-	if DisplayExecName {
+	if displayExecName {
 		procInfo = filepath.Base(os.Args[0])
-		if DisplayPID {
+		if displayPID {
 			procInfo = fmt.Sprintf("%s (PID %d)", procInfo, os.Getpid())
 		}
 	} else {
-		if DisplayPID {
+		if displayPID {
 			procInfo = fmt.Sprintf("PID %d", os.Getpid())
 		}
 	}
 	if procInfo != "" {
-		msg = fmt.Sprintf("%s %s %s %s >", prefixline, eUser, procInfo, msg)
+		msg = fmt.Sprintf("%s %s %s %s >>", prefixline, eUser, procInfo, msg)
 	}
 
 	if len(args) == 0 {
@@ -63,7 +64,7 @@ func emit(header string, message string) {
 	if logger == nil {
 		logger = log.New(os.Stdout, "", 0)
 	}
-	ts := time.Now().Format(timeLayout)
+	ts := time.Now().Format("2006-01-02 15:04:05")
 	logger.Printf("%s %s %s", ts, header, message)
 }
 
