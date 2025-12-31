@@ -1,7 +1,8 @@
 | Release | Date        | Comments                                                                                                        |
 |---------|-------------|-----------------------------------------------------------------------------------------------------------------|
+| 4.1.0   | 2025.12.31  | Added a prettyjson subpackage, to prettify JSON output, "a-la-jq"                                               |
 | 4.0.0   | 2025.11.13  | **Breaking changes**<br>Removed the customError package from this package, to avoid circular dependencies hell  |
-| 4.0.0   | _continued_ | Glyph function calls are cleaner<br>All log init options are now wrapped in a single struct                     |                                                                                      
+| 4.0.0   | _continued_ | Glyph function calls are cleaner<br>All log init options are now wrapped in a single struct                     |                             
 | 3.1.0   | 2025.11.10  | Swapped parameters in most glyph functions in terminalfx so that the text will stay in the usual white color    |
 | 3.0.8   | 2025.11.10  | Added another option to prepend the messsage text with the username calling the tool                            |
 | 3.0.6   | 2025.11.09  | Added an optional prefix option for each logfile entry                                                          |
