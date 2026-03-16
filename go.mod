@@ -1,4 +1,4 @@
-module github.com/jeanfrancoisgratton/helperFunctions/v4
+module github.com/jeanfrancoisgratton/helperFunctions/v5
 
 go 1.26.1
 
