@@ -1,6 +1,6 @@
 | Release | Date        | Comments                                                                                                       |
 |---------|-------------|----------------------------------------------------------------------------------------------------------------|
-| 5.0.0   | 2026.03.15  | Added a new package, networking                                                                                |
+| 5.0.1   | 2026.03.15  | Added a new package, networking                                                                                |
 | 4.1.0   | 2025.12.31  | Added a prettyjson subpackage, to prettify JSON output, "a-la-jq"                                              |
 | 4.0.0   | 2025.11.13  | **Breaking changes**<br>Removed the customError package from this package, to avoid circular dependencies hell |
 | 4.0.0   | _continued_ | Glyph function calls are cleaner<br>All log init options are now wrapped in a single struct                    |                             
