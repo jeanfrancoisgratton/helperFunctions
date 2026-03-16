@@ -8,7 +8,7 @@ package helperFunctions
 import (
 	"fmt"
 
-	"github.com/jeanfrancoisgratton/helperFunctions/v4/terminalfx"
+	"github.com/jeanfrancoisgratton/helperFunctions/v5/terminalfx"
 )
 
 // NUMBER FORMATTING FUNCTIONS

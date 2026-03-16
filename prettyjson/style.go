@@ -3,7 +3,7 @@
 
 package prettyjson
 
-import "github.com/jeanfrancoisgratton/helperFunctions/v4/terminalfx"
+import "github.com/jeanfrancoisgratton/helperFunctions/v5/terminalfx"
 
 // DefaultStyle returns a terminal-friendly style based on terminalfx.
 //
