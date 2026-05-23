@@ -1,5 +1,6 @@
 | Release | Date        | Comments                                                                                                       |
 |---------|-------------|----------------------------------------------------------------------------------------------------------------|
+| 5,1.0   | 2026.05.26  | Added the `pager` subpackage to (...kind of...) emulate linux' `more` pager                                    |
 | 5.0.2   | 2026.03.27  | Added mathematical symbols in glyphs.go                                                                        | 
 | 5.0.1   | 2026.03.15  | Added a new package, networking                                                                                |
 | 4.1.0   | 2025.12.31  | Added a prettyjson subpackage, to prettify JSON output, "a-la-jq"                                              |
