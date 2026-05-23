@@ -1,6 +1,6 @@
 # helperFunctions
 ---
-<img src="./_images/helperFunctions_banner.png" alt="helperFunctions lib logo" height="400" /><br>
+<img src="./_images/helperFunctions_banner.png" alt="helperFunctions lib logo" height="400" width="512" /><br>
 
 A personal Go utility library — a single source of truth for functions that keep appearing across my tools.
 
