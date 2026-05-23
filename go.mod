@@ -1,15 +1,15 @@
 module github.com/jeanfrancoisgratton/helperFunctions/v5
 
-go 1.26.1
+go 1.26.3
 
 require (
 	github.com/jwalton/gchalk v1.3.0
-	golang.org/x/crypto v0.49.0
-	golang.org/x/net v0.52.0
-	golang.org/x/term v0.41.0
+	golang.org/x/crypto v0.52.0
+	golang.org/x/net v0.55.0
+	golang.org/x/term v0.43.0
 )
 
 require (
 	github.com/jwalton/go-supportscolor v1.2.0 // indirect
-	golang.org/x/sys v0.42.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
 )
