@@ -7,8 +7,7 @@ package helperFunctions
 
 import (
 	"fmt"
-
-	"github.com/jeanfrancoisgratton/helperFunctions/v5/terminalfx"
+	"math"
 )
 
 // NUMBER FORMATTING FUNCTIONS
@@ -60,10 +59,24 @@ func ReverseString(s string) (result string) {
 	return
 }
 
-// Prints the changelog of the calling tool
-func ChangeLog(cl string, clear bool) {
-	if clear {
-		terminalfx.ClearTTY()
+// BytesToUnit : converts a number in bytes to its equivalent in MB, GB or TB
+// This function can further be used in conjunction with SI()
+func BytesToUnit(bytes uint64, unit rune, decimals int) (float64, error) {
+	var divisor float64
+
+	switch unit {
+	case 'm', 'M':
+		divisor = 1 << 20
+	case 'g', 'G':
+		divisor = 1 << 30
+	case 't', 'T':
+		divisor = 1 << 40
+	default:
+		return 0, fmt.Errorf("invalid unit '%c'", unit)
 	}
-	fmt.Print(cl)
+
+	value := float64(bytes) / divisor
+
+	factor := math.Pow10(decimals)
+	return math.Round(value*factor) / factor, nil
 }
