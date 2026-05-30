@@ -9,6 +9,42 @@ Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
 
 ---
 
+## Table of contents
+
+- [Installation](#installation)
+- [Package overview](#package-overview)
+- [Root package — `helperFunctions`](#root-package--helperfunctions)
+    - [Numeric formatting](#numeric-formatting)
+    - [Byte-size conversion](#byte-size-conversion)
+    - [String utilities](#string-utilities)
+    - [Prompts](#prompts)
+    - [Passwords and AES encryption](#passwords-and-aes-encryption)
+- [`terminalfx`](#terminalfx)
+    - [Terminal introspection and control](#terminal-introspection-and-control)
+    - [Text alignment](#text-alignment)
+    - [ANSI colour wrappers](#ansi-colour-wrappers)
+    - [Glyphs](#glyphs)
+- [`logging`](#logging)
+    - [Log levels](#log-levels)
+    - [Initialization](#initialization)
+    - [Emitting log lines](#emitting-log-lines)
+    - [Level management](#level-management)
+- [`prettyjson`](#prettyjson)
+    - [Functions](#functions)
+    - [Options](#options)
+    - [Colour modes](#colour-modes)
+    - [Styles](#styles)
+- [`networking`](#networking)
+- [`repomanagement`](#repomanagement)
+- [`pager`](#pager)
+    - [Entry point](#entry-point)
+    - [Keybindings](#keybindings)
+    - [Status bar](#status-bar)
+- [Dependencies](#dependencies)
+- [Changelog](#changelog)
+
+---
+
 ## Installation
 
 ```bash
@@ -23,7 +59,7 @@ The library is organized as a root package plus several subpackages, each with a
 
 | Package | Import path | Responsibility |
 |---|---|---|
-| `helperFunctions` | `.../v5` | Miscellaneous utilities (number formatting, string reversal, changelog) |
+| `helperFunctions` | `.../v5` | Miscellaneous utilities (number formatting, byte-size conversion, string reversal) |
 | `terminalfx` | `.../v5/terminalfx` | Terminal size, clearing, text alignment, ANSI colours, glyphs |
 | `logging` | `.../v5/logging` | Levelled, structured logging to stdout or a file |
 | `prettyjson` | `.../v5/prettyjson` | Colourized JSON pretty-printer (jq-style) |
@@ -56,6 +92,26 @@ hf.SI(3.14159)   // → "3"  (rounded to nearest integer)
 Accepts `int`, `int8`–`int64`, `uint`–`uint64`, `float32`, `float64`.
 Returns `"Invalid input"` for anything else.
 
+### Byte-size conversion
+
+```go
+func BytesToUnit(bytes uint64, unit rune, decimals int) (float64, error)
+```
+
+Converts a byte count to megabytes (`'m'`/`'M'`), gigabytes (`'g'`/`'G'`), or terabytes (`'t'`/`'T'`), rounded to `decimals` decimal places. Returns an error for any other unit rune.
+
+```go
+mb, err := hf.BytesToUnit(1_500_000_000, 'G', 2)  // → 1.4, nil
+tb, err := hf.BytesToUnit(2_199_023_255_552, 'T', 1) // → 2.0, nil
+```
+
+The result pairs naturally with `SI()` for human-readable output:
+
+```go
+gb, _ := hf.BytesToUnit(disk.Size, 'G', 2)
+fmt.Printf("Disk: %s GB\n", hf.SI(gb))
+```
+
 ### String utilities
 
 ```go
@@ -67,14 +123,6 @@ Returns the Unicode-safe reversal of `s`.
 ```go
 hf.ReverseString("abcdef")  // → "fedcba"
 ```
-
-### Changelog display
-
-```go
-func ChangeLog(cl string, clear bool)
-```
-
-Prints the string `cl` to stdout. If `clear` is `true` the terminal is cleared first via `terminalfx.ClearTTY`.
 
 ### Prompts
 
