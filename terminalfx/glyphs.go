@@ -46,3 +46,10 @@ func TipSign(sentence string) string        { return fmt.Sprintf("💡 %s%s", re
 func LightbulbSign(sentence string) string  { return fmt.Sprintf("💡 %s%s", reset, sentence) }
 func ThumbsUpSign(sentence string) string   { return fmt.Sprintf("👍 %s%s", reset, sentence) }
 func ThumbsDownSign(sentence string) string { return fmt.Sprintf("👎 %s%s", reset, sentence) }
+
+// Logical / maths
+func NotExistMathSign(sentence string) string      { return fmt.Sprintf("∄ %s%s", reset, sentence) }
+func ExistMathSign(sentence string) string         { return fmt.Sprintf("∃ %s%s", reset, sentence) }
+func NotIncludedInMathSign(sentence string) string { return fmt.Sprintf("∉ %s%s", reset, sentence) }
+func IsIncludedInMathSign(sentence string) string  { return fmt.Sprintf("∈ %s%s", reset, sentence) }
+func DeltaSymbolMathSign(sentence string) string   { return fmt.Sprintf("∆ %s%s", reset, sentence) }
