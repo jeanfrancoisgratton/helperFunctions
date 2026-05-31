@@ -13,7 +13,7 @@ import (
 // NUMBER FORMATTING FUNCTIONS
 // ===========================
 
-// This function was originally written in 1993, in C, by my friend Jean-François Gauthier (jief@brebis.dyndns.org)
+// This function was originally written in 1993, in C, by my friend Jean-François Gauthier
 // I've ported it in C# in 2011. It is still loosely based on J.F.Gauthier's version, somehow; credit is given where credit is due
 // This function transforms a multi-digit number in International Notation; 1234567 thus becomes 1,234,567
 
