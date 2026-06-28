@@ -4,7 +4,7 @@
 
 A personal Go utility library — a single source of truth for functions that keep appearing across my tools.
 
-Current version: **v5**  
+Current version: **v5.3.0**  
 Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
 
 ---
@@ -19,6 +19,7 @@ Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
     - [String utilities](#string-utilities)
     - [Prompts](#prompts)
     - [Passwords and AES encryption](#passwords-and-aes-encryption)
+    - [File encryption](#file-encryption)
 - [`terminalfx`](#terminalfx)
     - [Terminal introspection and control](#terminal-introspection-and-control)
     - [Text alignment](#text-alignment)
@@ -163,6 +164,22 @@ decoded := hf.DecodeString(encoded, myKey)
 ```
 
 > **Note:** The default key is intentionally weak. Always supply your own 32-byte key in production.
+
+### File encryption
+
+```go
+func EncodeFile(infile, outfile, privateKey string) error
+func DecodeFile(infile, outfile, privateKey string) error
+```
+
+File-level counterparts to `EncodeString`/`DecodeString`. Both use the same AES-256-CFB cipher and SHA-256-derived key. The encrypted output is base64-encoded, so it is safe to store or transmit as plain text. The decrypted output is written with mode `0600`.
+
+```go
+err := hf.EncodeFile("secrets.json", "secrets.json.enc", myKey)
+err  = hf.DecodeFile("secrets.json.enc", "secrets.json", myKey)
+```
+
+> **Note:** `outfile` is overwritten without prompting. The output file is created with permissions `0600` regardless of the source file's permissions.
 
 ---
 
