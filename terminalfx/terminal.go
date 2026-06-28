@@ -29,7 +29,8 @@ func GetTerminalSize() (int, int) {
 	return int(size.cols), int(size.rows)
 }
 
-// Yeah... I know.. nobody should clear a TTY in-tool... :p
+// Yeah... I know... nobody should clear a TTY in-tool... :p
+
 func ClearTTY() {
 	fmt.Print("\x1b[2J") // Clears screen
 	fmt.Print("\x1b[H")  // Moves cursor to top-left corner
@@ -69,6 +70,7 @@ func Right(input string) string {
 
 // COLOR FUNCTIONS
 // ===============
+
 func Red(sentence string) string {
 	return fmt.Sprintf("%s", gchalk.WithBrightRed().Bold(sentence))
 }

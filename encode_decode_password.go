@@ -1,6 +1,6 @@
 // helperFunctions
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
-// Original filename: /encodeDecodePassword.go
+// Original filename: /encode_decode_password.go
 // Original timestamp: 2024/04/10 15:03
 
 package helperFunctions
@@ -21,6 +21,7 @@ import (
 )
 
 // Breaking change: if DebugMode is true, we catch the passwd in cleartext
+
 func GetPassword(prompt string, debugmode bool) string {
 	if debugmode {
 		return GetStringValFromPrompt(prompt)
@@ -57,7 +58,8 @@ func GetPassword(prompt string, debugmode bool) string {
 }
 
 // Quick functions to encode and decode strings
-// This is based on my encryption-decryption tool : https://github.com/jeanfrancoisgratton/encdec
+// This is based on my encryption-decryption tool, https://github.com/jeanfrancoisgratton/encdec
+
 func EncodeString(string2encode string, privateKey string) string {
 	plaintext := []byte(string2encode)
 	key := sha256sum(privateKey)
@@ -98,7 +100,8 @@ func sha256sum(s string) []byte {
 	return key
 }
 
-// Quick functions to decode strings that were encoded by EncodeString()
+// Quick function to decode strings that were encoded by EncodeString()
+
 func DecodeString(encodedstring string, privateKey string) string {
 	ciphertext, _ := base64.StdEncoding.DecodeString(encodedstring)
 	key := sha256sum(privateKey)

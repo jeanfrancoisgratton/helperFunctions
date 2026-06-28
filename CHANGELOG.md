@@ -1,7 +1,8 @@
 | Release | Date          | Comments                                                                                                       |
 |---------|---------------|----------------------------------------------------------------------------------------------------------------|
+| 5.3.0   | 2026.06.28    | Added `EncodeFile()` / `DecodeFile()` functions                                                                |
 | 5.2.2   | 2026.06.18    | Better glyph rendering for some "faulty" glyphs in terminalfx/                                                 |
-| 5.2.1   | 2026.05.31    | Fixed SI() so malformed numbers with many decimal places display properly (ie: no 1,234.1,150)                 |
+| 5.2.1   | 2026.05.31    | Fixed `SI()` so malformed numbers with many decimal places display properly (ie: no 1,234.1,150)               |
 | 5.2.0   | 2026.05.30    | Removed Changelog() from misc.go, added a function to convert bytes to MB, GB or TB                            |
 | 5.1.0   | 2026.05.26    | Added the `pager` subpackage to (...kind of...) emulate linux' `more` pager                                    |
 | 5.0.2   | 2026.03.27    | Added mathematical symbols in glyphs.go                                                                        | 
