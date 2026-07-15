@@ -16,13 +16,13 @@ import (
 
 // EncodeFile encrypts the contents of infile using AES-256-CFB (same key
 // derivation as EncodeString) and writes the base64-encoded result to outfile.
-func EncodeFile(infile, outfile, privateKey string) error {
+func EncodeFile(infile, outfile, passphrase string) error {
 	plaintext, err := os.ReadFile(infile)
 	if err != nil {
 		return err
 	}
 
-	key := sha256sum(privateKey)
+	key := sha256sum(passphrase)
 
 	ciphertext := make([]byte, aes.BlockSize+len(plaintext))
 	iv := ciphertext[:aes.BlockSize]
@@ -44,7 +44,7 @@ func EncodeFile(infile, outfile, privateKey string) error {
 
 // DecodeFile decrypts a file that was encrypted by EncodeFile and writes the
 // recovered plaintext to outfile.
-func DecodeFile(infile, outfile, privateKey string) error {
+func DecodeFile(infile, outfile, passphrase string) error {
 	encoded, err := os.ReadFile(infile)
 	if err != nil {
 		return err
@@ -55,7 +55,7 @@ func DecodeFile(infile, outfile, privateKey string) error {
 		return err
 	}
 
-	key := sha256sum(privateKey)
+	key := sha256sum(passphrase)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {

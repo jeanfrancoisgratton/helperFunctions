@@ -148,35 +148,33 @@ tags := hf.GetStringSliceFromPrompt("Enter tags (blank line to finish):")
 
 ```go
 func GetPassword(prompt string, debugmode bool) string
-func EncodeString(string2encode string, privateKey string) string
-func DecodeString(encodedstring string, privateKey string) string
+func EncodeString(string2encode string, passphrase string) string
+func DecodeString(encodedstring string, passphrase string) string
 ```
 
 `GetPassword` reads a password without echoing it. If `debugmode` is `true` it falls back to a plain `GetStringValFromPrompt` (useful during development).
 
 `EncodeString`/`DecodeString` use AES-256-CFB with a SHA-256-derived key.
-`privateKey` must be exactly 32 bytes; a built-in default key is used if it is not.
+`passphrase` can be any length; it is SHA-256-hashed internally to produce the 32-byte AES-256 key.
 
 ```go
 pass    := hf.GetPassword("Password: ", false)
-encoded := hf.EncodeString("s3cr3t", myKey)
-decoded := hf.DecodeString(encoded, myKey)
+encoded := hf.EncodeString("s3cr3t", pass)
+decoded := hf.DecodeString(encoded, pass)
 ```
-
-> **Note:** The default key is intentionally weak. Always supply your own 32-byte key in production.
 
 ### File encryption
 
 ```go
-func EncodeFile(infile, outfile, privateKey string) error
-func DecodeFile(infile, outfile, privateKey string) error
+func EncodeFile(infile, outfile, passphrase string) error
+func DecodeFile(infile, outfile, passphrase string) error
 ```
 
 File-level counterparts to `EncodeString`/`DecodeString`. Both use the same AES-256-CFB cipher and SHA-256-derived key. The encrypted output is base64-encoded, so it is safe to store or transmit as plain text. The decrypted output is written with mode `0600`.
 
 ```go
-err := hf.EncodeFile("secrets.json", "secrets.json.enc", myKey)
-err  = hf.DecodeFile("secrets.json.enc", "secrets.json", myKey)
+err := hf.EncodeFile("secrets.json", "secrets.json.enc", pass)
+err  = hf.DecodeFile("secrets.json.enc", "secrets.json", pass)
 ```
 
 > **Note:** `outfile` is overwritten without prompting. The output file is created with permissions `0600` regardless of the source file's permissions.

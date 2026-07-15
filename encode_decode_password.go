@@ -60,9 +60,9 @@ func GetPassword(prompt string, debugmode bool) string {
 // Quick functions to encode and decode strings
 // This is based on my encryption-decryption tool, https://github.com/jeanfrancoisgratton/encdec
 
-func EncodeString(string2encode string, privateKey string) string {
+func EncodeString(string2encode string, passphrase string) string {
 	plaintext := []byte(string2encode)
-	key := sha256sum(privateKey)
+	key := sha256sum(passphrase)
 
 	ciphertext := make([]byte, aes.BlockSize+len(plaintext))
 	iv := ciphertext[:aes.BlockSize]
@@ -102,9 +102,9 @@ func sha256sum(s string) []byte {
 
 // Quick function to decode strings that were encoded by EncodeString()
 
-func DecodeString(encodedstring string, privateKey string) string {
+func DecodeString(encodedstring string, passphrase string) string {
 	ciphertext, _ := base64.StdEncoding.DecodeString(encodedstring)
-	key := sha256sum(privateKey)
+	key := sha256sum(passphrase)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
