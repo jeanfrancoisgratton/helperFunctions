@@ -1,5 +1,6 @@
 | Release | Date          | Comments                                                                                                                 |
 |---------|---------------|--------------------------------------------------------------------------------------------------------------------------|
+| 5.3.2   | 2026.07.26    | Fixed the InfoSign glyph that returned a monochrome glyph                                                                |
 | 5.3.1   | 2026.07.16    | Doc tweaks, added test files                                                                                             | 
 | 5.3.0   | 2026.06.28    | Added `EncodeFile()` and `DecodeFile()` — AES-256-CFB file encryption/decryption (mirrors `EncodeString`/`DecodeString`) |
 | 5.2.2   | 2026.06.18    | Better glyph rendering for some "faulty" glyphs in terminalfx/                                                           |

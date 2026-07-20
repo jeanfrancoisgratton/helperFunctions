@@ -235,7 +235,7 @@ Prepend a Unicode glyph to `sentence` and return the result. The sentence itself
 | `GreenGoSign(s)` | 🟢 | All clear |
 | `InProgressSign(s)` | ⏳ | Task in progress |
 | `WarningSign(s)` | ⚠ | Warning |
-| `InfoSign(s)` | 🛈 | Informational |
+| `InfoSign(s)` | ℹ️ | Informational |
 | `NoteSign(s)` | 💬 | Note / comment |
 | `ScrollSign(s)` | 📜 | Document |
 | `TipSign(s)` / `LightbulbSign(s)` | 💡 | Tip |
