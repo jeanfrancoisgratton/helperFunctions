@@ -7,26 +7,20 @@ package terminalfx
 
 import (
 	"fmt"
+	"os"
 	"strings"
-	"syscall"
-	"unsafe"
 
 	"github.com/jwalton/gchalk"
+	"golang.org/x/term"
 )
 
 // TERMINAL FUNCTIONS
 func GetTerminalSize() (int, int) {
-	var size struct {
-		rows    uint16
-		cols    uint16
-		xpixels uint16
-		ypixels uint16
-	}
-	_, _, err := syscall.Syscall(syscall.SYS_IOCTL, uintptr(syscall.Stdin), syscall.TIOCGWINSZ, uintptr(unsafe.Pointer(&size)))
-	if err != 0 {
+	cols, rows, err := term.GetSize(int(os.Stdin.Fd()))
+	if err != nil {
 		return 0, 0
 	}
-	return int(size.cols), int(size.rows)
+	return cols, rows
 }
 
 // Yeah... I know... nobody should clear a TTY in-tool... :p
