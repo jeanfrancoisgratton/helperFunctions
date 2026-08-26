@@ -39,7 +39,7 @@ func GreenGoSign(sentence string) string { return fmt.Sprintf("🟢 %s%s", reset
 
 func InProgressSign(sentence string) string { return fmt.Sprintf("⏳️ %s%s", reset, sentence) } // U+23F3 HOURGLASS NOT DONE
 func WarningSign(sentence string) string    { return fmt.Sprintf("⚠️ %s%s", reset, sentence) } // U+26A0 WARNING SIGN
-func InfoSign(sentence string) string       { return fmt.Sprintf("🛈 %s%s", reset, sentence) } // circled info (U+1F6C8)
+func InfoSign(sentence string) string       { return fmt.Sprintf("ℹ️ %s%s", reset, sentence) } // U+2139 INFORMATION SOURCE + VS16
 func NoteSign(sentence string) string       { return fmt.Sprintf("💬 %s%s", reset, sentence) } // speech bubble
 func ScrollSign(sentence string) string     { return fmt.Sprintf("📜 %s%s", reset, sentence) } // scroll/document
 func TipSign(sentence string) string        { return fmt.Sprintf("💡 %s%s", reset, sentence) }

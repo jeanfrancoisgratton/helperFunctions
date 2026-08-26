@@ -1,6 +1,6 @@
 // helperFunctions
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
-// Original filename: /encode_decode_password.go
+// Original filename: /encode_decode_string.go
 // Original timestamp: 2024/04/10 15:03
 
 package helperFunctions
@@ -17,7 +17,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 // Breaking change: if DebugMode is true, we catch the passwd in cleartext
@@ -27,7 +27,7 @@ func GetPassword(prompt string, debugmode bool) string {
 		return GetStringValFromPrompt(prompt)
 	}
 	// Get the initial state of the terminal.
-	initialTermState, e1 := terminal.GetState(syscall.Stdin)
+	initialTermState, e1 := term.GetState(int(os.Stdin.Fd()))
 	if e1 != nil {
 		panic(e1)
 	}
@@ -38,13 +38,13 @@ func GetPassword(prompt string, debugmode bool) string {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		_ = terminal.Restore(syscall.Stdin, initialTermState)
+		_ = term.Restore(int(os.Stdin.Fd()), initialTermState)
 		os.Exit(1)
 	}()
 
 	// Now get the password.
 	fmt.Print(prompt)
-	p, err := terminal.ReadPassword(syscall.Stdin)
+	p, err := term.ReadPassword(int(os.Stdin.Fd()))
 	fmt.Println("")
 	if err != nil {
 		panic(err)
@@ -60,9 +60,9 @@ func GetPassword(prompt string, debugmode bool) string {
 // Quick functions to encode and decode strings
 // This is based on my encryption-decryption tool, https://github.com/jeanfrancoisgratton/encdec
 
-func EncodeString(string2encode string, privateKey string) string {
+func EncodeString(string2encode string, passphrase string) string {
 	plaintext := []byte(string2encode)
-	key := sha256sum(privateKey)
+	key := sha256sum(passphrase)
 
 	ciphertext := make([]byte, aes.BlockSize+len(plaintext))
 	iv := ciphertext[:aes.BlockSize]
@@ -102,9 +102,9 @@ func sha256sum(s string) []byte {
 
 // Quick function to decode strings that were encoded by EncodeString()
 
-func DecodeString(encodedstring string, privateKey string) string {
+func DecodeString(encodedstring string, passphrase string) string {
 	ciphertext, _ := base64.StdEncoding.DecodeString(encodedstring)
-	key := sha256sum(privateKey)
+	key := sha256sum(passphrase)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
