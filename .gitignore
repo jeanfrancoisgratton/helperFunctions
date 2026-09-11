@@ -21,7 +21,6 @@ samples/
 *.bkp
 *.dtmp
 *.swp
-.idea/
 
 testBuild
 
