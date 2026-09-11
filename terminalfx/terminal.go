@@ -1,6 +1,6 @@
 // helperFunctions
 // Written by J.F. Gratton <jean-francois@famillegratton.net>
-// Original filename: /terminal.go
+// Original filename: terminalfx/terminal.go
 // Original timestamp: 2024/04/10 15:21
 
 package terminalfx
@@ -10,7 +10,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jwalton/gchalk"
 	"golang.org/x/term"
 )
 
@@ -30,57 +29,14 @@ func ClearTTY() {
 	fmt.Print("\x1b[H")  // Moves cursor to top-left corner
 }
 
-// Center string in the terminal
-func Center(input string) string {
-	width, _ := GetTerminalSize()
+// HorizontalLine returns a horizontal rule made of Unicode box-drawing
+// characters. A width of 0 uses the current terminal's width.
+func HorizontalLine(width int) string {
 	if width == 0 {
-		width = 80 // Default to 80 columns if size retrieval fails
+		width, _ = GetTerminalSize()
+		if width == 0 {
+			width = 80
+		}
 	}
-
-	// Calculate the padding needed to center the text
-	padding := (width - len(input)) / 2
-	if padding < 0 {
-		padding = 0 // Avoid negative padding if the string is longer than the terminal width
-	}
-
-	return strings.Repeat(" ", padding) + input
-}
-
-// Right aligns the input string to the right side of the terminal.
-func Right(input string) string {
-	width, _ := GetTerminalSize()
-	if width == 0 {
-		width = 80 // Default width if retrieval fails
-	}
-
-	// Calculate the padding needed to right-align the text
-	padding := width - len(input)
-	if padding < 0 {
-		padding = 0 // Avoid negative padding if the string is longer than the terminal width
-	}
-
-	return strings.Repeat(" ", padding) + input
-}
-
-// COLOR FUNCTIONS
-// ===============
-
-func Red(sentence string) string {
-	return fmt.Sprintf("%s", gchalk.WithBrightRed().Bold(sentence))
-}
-
-func Green(sentence string) string {
-	return fmt.Sprintf("%s", gchalk.WithBrightGreen().Bold(sentence))
-}
-
-func White(sentence string) string {
-	return fmt.Sprintf("%s", gchalk.WithBrightWhite().Bold(sentence))
-}
-
-func Yellow(sentence string) string {
-	return fmt.Sprintf("%s", gchalk.WithBrightYellow().Bold(sentence))
-}
-
-func Blue(sentence string) string {
-	return fmt.Sprintf("%s", gchalk.WithBlue().Bold(sentence))
+	return strings.Repeat("─", width)
 }

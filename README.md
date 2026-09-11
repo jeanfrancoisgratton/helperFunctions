@@ -4,7 +4,7 @@
 
 A personal Go utility library — a single source of truth for functions that keep appearing across my tools.
 
-Current version: **v5.3.0**  
+Current version: **v5.5.0**  
 Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
 
 ---
@@ -23,6 +23,7 @@ Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
 - [`terminalfx`](#terminalfx)
     - [Terminal introspection and control](#terminal-introspection-and-control)
     - [Text alignment](#text-alignment)
+    - [Text styles](#text-styles)
     - [ANSI colour wrappers](#ansi-colour-wrappers)
     - [Glyphs](#glyphs)
 - [`logging`](#logging)
@@ -61,7 +62,7 @@ The library is organized as a root package plus several subpackages, each with a
 | Package | Import path | Responsibility |
 |---|---|---|
 | `helperFunctions` | `.../v5` | Miscellaneous utilities (number formatting, byte-size conversion, string reversal) |
-| `terminalfx` | `.../v5/terminalfx` | Terminal size, clearing, text alignment, ANSI colours, glyphs |
+| `terminalfx` | `.../v5/terminalfx` | Terminal size, clearing, horizontal rules, text alignment, text styles, ANSI colours (bright/dim), glyphs |
 | `logging` | `.../v5/logging` | Levelled, structured logging to stdout or a file |
 | `prettyjson` | `.../v5/prettyjson` | Colourized JSON pretty-printer (jq-style) |
 | `networking` | `.../v5/networking` | DNS/reverse-lookup helpers |
@@ -192,31 +193,62 @@ import "github.com/jeanfrancoisgratton/helperFunctions/v5/terminalfx"
 ```go
 func GetTerminalSize() (cols int, rows int)
 func ClearTTY()
+func HorizontalLine(width int) string
 ```
 
 `GetTerminalSize` queries the kernel via `TIOCGWINSZ`; returns `(0, 0)` on failure.  
-`ClearTTY` sends ANSI escape sequences to clear the screen and home the cursor.
+`ClearTTY` sends ANSI escape sequences to clear the screen and home the cursor.  
+`HorizontalLine` returns a rule made of `─` characters. A `width` of `0` uses the current terminal width (defaulting to 80 columns if the size cannot be determined); any other value is used as-is.
 
 ### Text alignment
 
 ```go
 func Center(input string) string
+func Left(input string) string
 func Right(input string) string
 ```
 
-Returns `input` padded with leading spaces so it appears centred or right-aligned in the current terminal width (defaults to 80 columns if the size cannot be determined).
+Pads `input` so it appears centred, left-aligned, or right-aligned within the current terminal width (defaults to 80 columns if the size cannot be determined). Width is measured via [lipgloss](https://github.com/charmbracelet/lipgloss)'s ANSI-escape- and grapheme-aware string width, so already-colourized or non-ASCII input aligns correctly instead of counting escape-sequence bytes as columns.
+
+### Text styles
+
+```go
+func Bold(sentence string) string
+func Italic(sentence string) string
+func Underline(sentence string) string
+func Reverse(sentence string) string
+func Blink(sentence string) string
+func Strikethrough(sentence string) string
+```
+
+Wraps `sentence` with the corresponding SGR attribute. These compose with the colour wrappers below:
+
+```go
+terminalfx.Bold(terminalfx.Red("critical"))
+```
+
+> **Note:** `Blink` is spec-correct but many modern terminal emulators (iTerm2, Windows Terminal, and others) ignore or intentionally disable it.
 
 ### ANSI colour wrappers
 
-Each function wraps `input` with bold ANSI colour codes via [gchalk](https://github.com/jwalton/gchalk) and returns the colourized string.
+Each colour has a **bright** variant and a **dim** (darker-shade) variant, built on [lipgloss](https://github.com/charmbracelet/lipgloss). The base eight ANSI colours use the terminal's native bright/normal intensity indices, so they degrade correctly on 16-colour terminals; colours with no ANSI equivalent use hand-picked truecolor hex pairs. All functions share the signature `func(input string) string`.
 
-```go
-func Red(input string) string
-func Green(input string) string
-func White(input string) string
-func Yellow(input string) string
-func Blue(input string) string
-```
+| Colour  | Bright       | Dim             |
+|---------|--------------|-----------------|
+| Red     | `Red`        | `DimRed`        |
+| Green   | `Green`      | `DimGreen`      |
+| Yellow  | `Yellow`     | `DimYellow`     |
+| Blue    | `Blue`       | `DimBlue`       |
+| Magenta | `Magenta`    | `DimMagenta`    |
+| Cyan    | `Cyan`       | `DimCyan`       |
+| White   | `White`      | `DimWhite`      |
+| Brown   | `Brown`      | `DimBrown`      |
+| Copper  | `Copper`     | `DimCopper`     |
+| Bronze  | `Bronze`     | `DimBronze`     |
+| Gold    | `Gold`       | `DimGold`       |
+| Silver  | `Silver`     | `DimSilver`     |
+| Gray    | `Gray`       | `DimGray`       |
+| Orange  | `Orange`     | `DimOrange`     |
 
 These are also used by `prettyjson.DefaultStyle` to colourize JSON tokens.
 
@@ -552,10 +584,9 @@ if err := pager.Page(lines, 0, 0); err != nil {
 
 | Module | Used by |
 |---|---|
-| `github.com/jwalton/gchalk` | `terminalfx` (ANSI colour output) |
-| `golang.org/x/crypto` | root package (SSH terminal / password prompt) |
+| `charm.land/lipgloss/v2` | `terminalfx` (ANSI colour, text styles, alignment) |
 | `golang.org/x/net` | `networking` (public suffix list) |
-| `golang.org/x/term` | `prettyjson` (TTY detection), `pager` (raw mode) |
+| `golang.org/x/term` | `terminalfx`/`prettyjson` (TTY detection), `pager` (raw mode) |
 
 ---
 
