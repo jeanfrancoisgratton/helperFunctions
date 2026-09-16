@@ -4,7 +4,7 @@
 
 A personal Go utility library — a single source of truth for functions that keep appearing across my tools.
 
-Current version: **v5.5.0**  
+Current version: **v5.6.0**  
 Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
 
 ---
@@ -524,6 +524,8 @@ func Page(lines []string, bannerSize, footerSize int) error
 
 If `bannerSize + footerSize >= terminal height`, both values are silently ignored and all lines are treated as scrollable content. Negative values are clamped to zero.
 
+Lines wider than the terminal are hard-wrapped so the pagination math (page size, status bar counts) stays accurate on narrow terminals. On Unix-likes, resizing the terminal mid-session (`SIGWINCH`) re-measures and re-wraps immediately, without waiting for a keystroke; on Windows, where no such signal exists, the new size is picked up on the next keystroke.
+
 `Page` switches stdin to raw mode for the duration of the call and restores it before returning, whether it exits normally or because of an error.
 
 ### Keybindings
@@ -533,8 +535,10 @@ If `bannerSize + footerSize >= terminal height`, both values are silently ignore
 | `Space` | Advance one full page |
 | `Enter` | Advance one line |
 | `Ctrl+U` | Go back one full page |
-| `Ctrl+G` | Show current line position in the status bar; press any key to continue |
+| `Ctrl+G` | Show current line position in the status bar; the key that dismisses it is then handled normally (e.g. `Ctrl+G`, `Q` quits right away) |
 | `Q` / `q` | Quit and clear the screen |
+
+This is intentionally a minimal `more`-like binding set — no arrow keys, Page Up/Down, or Home/End. Worth revisiting if a use case needs them, but not planned for now.
 
 ### Status bar
 
