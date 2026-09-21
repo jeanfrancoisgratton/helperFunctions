@@ -4,7 +4,7 @@
 
 A personal Go utility library — a single source of truth for functions that keep appearing across my tools.
 
-Current version: **v5.5.0**  
+Current version: **v5.7.0**  
 Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
 
 ---
@@ -64,7 +64,7 @@ The library is organized as a root package plus several subpackages, each with a
 | `helperFunctions` | `.../v5` | Miscellaneous utilities (number formatting, byte-size conversion, string reversal) |
 | `terminalfx` | `.../v5/terminalfx` | Terminal size, clearing, horizontal rules, text alignment, text styles, ANSI colours (bright/dim), glyphs |
 | `logging` | `.../v5/logging` | Levelled, structured logging to stdout or a file |
-| `prettyjson` | `.../v5/prettyjson` | Colourized JSON pretty-printer (jq-style) |
+| `prettyjson` | `.../v5/prettyjson` | Colourized JSON pretty-printer (jq-style), with optional auto-paging via `pager` |
 | `networking` | `.../v5/networking` | DNS/reverse-lookup helpers |
 | `repomanagement` | `.../v5/repomanagement` | Parse Git remote URLs (HTTPS and SCP-style SSH) |
 | `pager` | `.../v5/pager` | Terminal pager with sticky banner/footer (à la `more`) |
@@ -389,10 +389,27 @@ func Format(payload []byte, opts ...Option) ([]byte, error)
 | `WithSortKeys(b bool)` | Sort object keys (default: `true`) |
 | `WithColorMode(m ColorMode)` | `ColorAuto` (default) / `ColorAlways` / `ColorNever` |
 | `WithStyle(s Style)` | Override the colour style |
+| `WithPaging(b bool)` | Route through `pager` when the output overflows the screen (default: `false`) |
 
 ### Colour modes
 
 `ColorAuto` (the default) enables colour only when the writer is a real TTY. Use `ColorAlways` to force ANSI codes into a captured string, or `ColorNever` to disable them entirely.
+
+### Paging
+
+`WithPaging(true)` lets `Print` decide, on its own, whether the rendered JSON needs a pager — no TTY checks or line-counting in the calling program:
+
+```go
+prettyjson.Print(data, prettyjson.WithPaging(true))
+```
+
+This is only ever a hint, honored solely by `Print` (not `SPrint`/`Format`, which just return text). It's silently ignored — falling back to normal `Print` behavior — unless *all* of the following hold:
+
+- the output writer is the default (`os.Stdout`); a custom `WithWriter` always wins and disables paging, since `pager.Page` can only write to the real terminal, not an arbitrary `io.Writer`
+- the process is attached to a terminal on both stdin and stdout (`terminalfx.Interactive()`)
+- the rendered content is actually taller than the terminal
+
+When paging kicks in, colour is forced on internally (as if `ColorAlways` had been passed) regardless of `ColorAuto`'s usual writer-based detection, since the real destination is a terminal even though rendering happens into a buffer first. An explicit `WithColorMode(ColorNever)` is still respected. If `pager.Page` itself fails for any reason, `Print` falls back to printing that same already-rendered text straight to stdout rather than returning an error — paging is best-effort.
 
 ### Styles
 
@@ -524,6 +541,8 @@ func Page(lines []string, bannerSize, footerSize int) error
 
 If `bannerSize + footerSize >= terminal height`, both values are silently ignored and all lines are treated as scrollable content. Negative values are clamped to zero.
 
+Lines wider than the terminal are hard-wrapped so the pagination math (page size, status bar counts) stays accurate on narrow terminals. On Unix-likes, resizing the terminal mid-session (`SIGWINCH`) re-measures and re-wraps immediately, without waiting for a keystroke; on Windows, where no such signal exists, the new size is picked up on the next keystroke.
+
 `Page` switches stdin to raw mode for the duration of the call and restores it before returning, whether it exits normally or because of an error.
 
 ### Keybindings
@@ -533,8 +552,10 @@ If `bannerSize + footerSize >= terminal height`, both values are silently ignore
 | `Space` | Advance one full page |
 | `Enter` | Advance one line |
 | `Ctrl+U` | Go back one full page |
-| `Ctrl+G` | Show current line position in the status bar; press any key to continue |
+| `Ctrl+G` | Show current line position in the status bar; the key that dismisses it is then handled normally (e.g. `Ctrl+G`, `Q` quits right away) |
 | `Q` / `q` | Quit and clear the screen |
+
+This is intentionally a minimal `more`-like binding set — no arrow keys, Page Up/Down, or Home/End. Worth revisiting if a use case needs them, but not planned for now.
 
 ### Status bar
 

@@ -7,13 +7,17 @@ package prettyjson
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"os"
 	"sort"
 	"strconv"
-	"encoding/json"
+	"strings"
+
+	"github.com/jeanfrancoisgratton/helperFunctions/v5/pager"
+	"github.com/jeanfrancoisgratton/helperFunctions/v5/terminalfx"
 )
 
 // Print pretty-prints a JSON payload to the configured writer.
@@ -22,6 +26,13 @@ import (
 //   - indentation is two spaces
 //   - object keys are sorted for stable output
 //   - colors are enabled only when printing to a terminal
+//
+// If WithPaging(true) was given, Print routes its output through the
+// pager subpackage instead of writing directly, but only when the writer
+// is the default (os.Stdout), the process is attached to a terminal on
+// both stdin and stdout, and the rendered content doesn't fit on one
+// screen; otherwise it prints normally. See WithPaging for the full
+// fallback rules.
 func Print(payload []byte, opts ...Option) error {
 	o := defaultOptions()
 	for _, opt := range opts {
@@ -40,11 +51,55 @@ func Print(payload []byte, opts ...Option) error {
 		return err
 	}
 
+	if shouldPage(o, w) {
+		return printPaged(v, o)
+	}
+
 	p := newPrinter(w, o)
 	if err := p.printValue(v, 0); err != nil {
 		return err
 	}
 	return p.writeString("\n")
+}
+
+// shouldPage reports whether Print should attempt to route through the
+// pager for the given options and resolved writer.
+func shouldPage(o Options, w io.Writer) bool {
+	return o.Paging && w == io.Writer(os.Stdout) && terminalfx.Interactive()
+}
+
+// printPaged renders v to a string — forcing color on unless the caller
+// explicitly disabled it — and either prints it directly (it fits on one
+// screen) or hands it to pager.Page. A pager failure falls back to a
+// direct print rather than failing the call: paging is a best-effort hint.
+func printPaged(v any, o Options) error {
+	if o.Color == ColorAuto {
+		o.Color = ColorAlways
+	}
+
+	var buf bytes.Buffer
+	p := newPrinter(&buf, o)
+	if err := p.printValue(v, 0); err != nil {
+		return err
+	}
+	if err := p.writeString("\n"); err != nil {
+		return err
+	}
+
+	text := buf.String()
+	lines := strings.Split(strings.TrimSuffix(text, "\n"), "\n")
+
+	_, height := terminalfx.GetTerminalSize()
+	if height <= 0 || len(lines) <= height {
+		_, err := io.WriteString(os.Stdout, text)
+		return err
+	}
+
+	if err := pager.Page(lines, 0, 0); err != nil {
+		_, err = io.WriteString(os.Stdout, text)
+		return err
+	}
+	return nil
 }
 
 // SPrint pretty-prints a JSON payload and returns it as a string.

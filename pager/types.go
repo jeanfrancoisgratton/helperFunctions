@@ -14,7 +14,8 @@
 //	Space   – advance one full page
 //	Enter   – advance one line
 //	Ctrl+U  – go back one full page
-//	Ctrl+G  – display current line position without redrawing
+//	Ctrl+G  – display current line position; the dismissing key is
+//	          then handled normally
 //	Q / q   – quit the pager
 package pager
 
@@ -29,5 +30,8 @@ const (
 	keyQUITu = 'Q'
 )
 
-// defaultTermHeight is used when the terminal size cannot be determined.
+// defaultTermHeight is used when the terminal height cannot be determined.
 const defaultTermHeight = 24
+
+// defaultTermWidth is used when the terminal width cannot be determined.
+const defaultTermWidth = 80

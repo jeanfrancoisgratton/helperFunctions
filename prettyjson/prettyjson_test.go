@@ -176,6 +176,46 @@ func TestIsTerminalWriter(t *testing.T) {
 	}
 }
 
+func TestShouldPage(t *testing.T) {
+	t.Run("Paging false never pages", func(t *testing.T) {
+		if shouldPage(Options{Paging: false}, os.Stdout) {
+			t.Error("shouldPage() = true, want false when Paging is false")
+		}
+	})
+
+	t.Run("custom writer never pages, even with Paging true", func(t *testing.T) {
+		var buf bytes.Buffer
+		if shouldPage(Options{Paging: true}, &buf) {
+			t.Error("shouldPage() = true, want false for a non-stdout writer")
+		}
+	})
+
+	t.Run("non-interactive process never pages", func(t *testing.T) {
+		// go test's stdin/stdout aren't a terminal, so terminalfx.Interactive()
+		// is reliably false here regardless of the other conditions.
+		if shouldPage(Options{Paging: true}, os.Stdout) {
+			t.Error("shouldPage() = true, want false when not attached to a terminal")
+		}
+	})
+}
+
+func TestPrintWithPagingFallsBackWhenNotInteractive(t *testing.T) {
+	// Under `go test`, terminalfx.Interactive() is false, so Print must
+	// behave exactly as it would with Paging left unset: no pager, no
+	// panic, normal ColorAuto-against-a-buffer behavior.
+	var buf bytes.Buffer
+	input := []byte(`{"a":1}`)
+
+	err := Print(input, WithWriter(&buf), WithPaging(true), WithColorMode(ColorNever))
+	if err != nil {
+		t.Fatalf("Print() error = %v", err)
+	}
+	want := "{\n  \"a\": 1\n}\n"
+	if buf.String() != want {
+		t.Errorf("Print() output = %q, want %q", buf.String(), want)
+	}
+}
+
 func TestStyles(t *testing.T) {
 	plain := PlainStyle()
 	if plain.Key != nil || plain.String != nil || plain.Number != nil ||

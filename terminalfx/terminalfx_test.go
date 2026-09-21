@@ -1,11 +1,32 @@
 package terminalfx
 
 import (
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/charmbracelet/x/ansi"
 )
+
+func TestIsTerminal(t *testing.T) {
+	f, err := os.CreateTemp(t.TempDir(), "terminalfx-*")
+	if err != nil {
+		t.Fatalf("CreateTemp: %v", err)
+	}
+	defer f.Close()
+
+	if IsTerminal(f) {
+		t.Error("IsTerminal(regular *os.File) = true, want false")
+	}
+}
+
+func TestInteractive(t *testing.T) {
+	// go test redirects stdin/stdout away from a real terminal, so this
+	// should reliably be false in CI and local test runs alike.
+	if Interactive() {
+		t.Error("Interactive() = true under `go test`, want false")
+	}
+}
 
 func TestGetTerminalSize(t *testing.T) {
 	cols, rows := GetTerminalSize()

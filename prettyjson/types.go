@@ -41,6 +41,7 @@ type Options struct {
 	SortKeys bool
 	Color    ColorMode
 	Style    Style
+	Paging   bool
 }
 
 // Option is a functional option for Print/SPrint.
@@ -53,6 +54,7 @@ func defaultOptions() Options {
 		SortKeys: true,
 		Color:    ColorAuto,
 		Style:    DefaultStyle(),
+		Paging:   false,
 	}
 }
 
@@ -79,4 +81,21 @@ func WithColorMode(m ColorMode) Option {
 // WithStyle overrides the current style.
 func WithStyle(s Style) Option {
 	return func(o *Options) { o.Style = s }
+}
+
+// WithPaging tells Print to route its output through the pager subpackage
+// when the rendered content doesn't fit on one screen.
+//
+// This is only ever a hint: it's honored by Print, and only when the
+// output writer is the default (os.Stdout) and the process is attached to
+// a terminal on both stdin and stdout (see terminalfx.Interactive). In any
+// other situation — a custom writer, redirected/piped I/O, or content
+// that already fits on one screen — it's silently ignored and Print
+// behaves exactly as it would with Paging left false.
+//
+// SPrint and Format ignore this option entirely: paging is an interactive,
+// side-effecting operation and doesn't fit their "return the formatted
+// text" contract.
+func WithPaging(enabled bool) Option {
+	return func(o *Options) { o.Paging = enabled }
 }
