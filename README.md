@@ -4,7 +4,7 @@
 
 A personal Go utility library — a single source of truth for functions that keep appearing across my tools.
 
-Current version: **v5.6.0**  
+Current version: **v5.7.0**  
 Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
 
 ---
@@ -64,7 +64,7 @@ The library is organized as a root package plus several subpackages, each with a
 | `helperFunctions` | `.../v5` | Miscellaneous utilities (number formatting, byte-size conversion, string reversal) |
 | `terminalfx` | `.../v5/terminalfx` | Terminal size, clearing, horizontal rules, text alignment, text styles, ANSI colours (bright/dim), glyphs |
 | `logging` | `.../v5/logging` | Levelled, structured logging to stdout or a file |
-| `prettyjson` | `.../v5/prettyjson` | Colourized JSON pretty-printer (jq-style) |
+| `prettyjson` | `.../v5/prettyjson` | Colourized JSON pretty-printer (jq-style), with optional auto-paging via `pager` |
 | `networking` | `.../v5/networking` | DNS/reverse-lookup helpers |
 | `repomanagement` | `.../v5/repomanagement` | Parse Git remote URLs (HTTPS and SCP-style SSH) |
 | `pager` | `.../v5/pager` | Terminal pager with sticky banner/footer (à la `more`) |
@@ -389,10 +389,27 @@ func Format(payload []byte, opts ...Option) ([]byte, error)
 | `WithSortKeys(b bool)` | Sort object keys (default: `true`) |
 | `WithColorMode(m ColorMode)` | `ColorAuto` (default) / `ColorAlways` / `ColorNever` |
 | `WithStyle(s Style)` | Override the colour style |
+| `WithPaging(b bool)` | Route through `pager` when the output overflows the screen (default: `false`) |
 
 ### Colour modes
 
 `ColorAuto` (the default) enables colour only when the writer is a real TTY. Use `ColorAlways` to force ANSI codes into a captured string, or `ColorNever` to disable them entirely.
+
+### Paging
+
+`WithPaging(true)` lets `Print` decide, on its own, whether the rendered JSON needs a pager — no TTY checks or line-counting in the calling program:
+
+```go
+prettyjson.Print(data, prettyjson.WithPaging(true))
+```
+
+This is only ever a hint, honored solely by `Print` (not `SPrint`/`Format`, which just return text). It's silently ignored — falling back to normal `Print` behavior — unless *all* of the following hold:
+
+- the output writer is the default (`os.Stdout`); a custom `WithWriter` always wins and disables paging, since `pager.Page` can only write to the real terminal, not an arbitrary `io.Writer`
+- the process is attached to a terminal on both stdin and stdout (`terminalfx.Interactive()`)
+- the rendered content is actually taller than the terminal
+
+When paging kicks in, colour is forced on internally (as if `ColorAlways` had been passed) regardless of `ColorAuto`'s usual writer-based detection, since the real destination is a terminal even though rendering happens into a buffer first. An explicit `WithColorMode(ColorNever)` is still respected. If `pager.Page` itself fails for any reason, `Print` falls back to printing that same already-rendered text straight to stdout rather than returning an error — paging is best-effort.
 
 ### Styles
 

@@ -22,6 +22,19 @@ func GetTerminalSize() (int, int) {
 	return cols, rows
 }
 
+// IsTerminal reports whether f is connected to a terminal.
+func IsTerminal(f *os.File) bool {
+	return term.IsTerminal(int(f.Fd()))
+}
+
+// Interactive reports whether the process is attached to a terminal on
+// both stdin and stdout. Callers use this to decide whether interactive
+// behavior (colourized output, paging, prompts) is appropriate, as
+// opposed to running with redirected/piped I/O.
+func Interactive() bool {
+	return IsTerminal(os.Stdin) && IsTerminal(os.Stdout)
+}
+
 // Yeah... I know... nobody should clear a TTY in-tool... :p
 
 func ClearTTY() {
