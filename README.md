@@ -158,6 +158,8 @@ func DecodeString(encodedstring string, passphrase string) string
 `EncodeString`/`DecodeString` use AES-256-CFB with a SHA-256-derived key.
 `passphrase` can be any length; it is SHA-256-hashed internally to produce the 32-byte AES-256 key.
 
+> **⚠ Deprecated — removal planned for v6.** `EncodeString`/`DecodeString` are unauthenticated (CFB has no integrity check) and use an unsalted SHA-256 hash for key derivation. Use [`EncryptString`/`DecryptString`](#authenticated-encryption-recommended-over-encodedecode) instead; they are not cross-compatible with these.
+
 ```go
 pass    := hf.GetPassword("Password: ", false)
 encoded := hf.EncodeString("s3cr3t", pass)
@@ -177,6 +179,8 @@ File-level counterparts to `EncodeString`/`DecodeString`. Both use the same AES-
 err := hf.EncodeFile("secrets.json", "secrets.json.enc", pass)
 err  = hf.DecodeFile("secrets.json.enc", "secrets.json", pass)
 ```
+
+> **⚠ Deprecated — removal planned for v6.** `EncodeFile`/`DecodeFile` share the same CFB/unsalted-SHA-256 limitations as `EncodeString`/`DecodeString`. Use [`EncryptFile`/`DecryptFile`](#authenticated-encryption-recommended-over-encodedecode) instead; they are not cross-compatible with these.
 
 ### Authenticated encryption (recommended over Encode/Decode)
 

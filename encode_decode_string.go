@@ -57,9 +57,16 @@ func GetPassword(prompt string, debugmode bool) string {
 	return string(p)
 }
 
-// Quick functions to encode and decode strings
+// EncodeString encrypts string2encode with AES-256-CFB using a SHA-256-derived
+// key, and returns the result base64-encoded.
+//
 // This is based on my encryption-decryption tool, https://github.com/jeanfrancoisgratton/encdec
-
+//
+// Deprecated: use EncryptString instead. EncodeString is unauthenticated
+// (CFB has no integrity check) and derives its key from an unsalted
+// SHA-256 hash of the passphrase. It will be removed in v6. EncryptString
+// is not cross-compatible with it — data encrypted with one can't be
+// decrypted with the other.
 func EncodeString(string2encode string, passphrase string) string {
 	plaintext := []byte(string2encode)
 	key := sha256sum(passphrase)
@@ -100,8 +107,11 @@ func sha256sum(s string) []byte {
 	return key
 }
 
-// Quick function to decode strings that were encoded by EncodeString()
-
+// DecodeString decrypts a string that was encrypted by EncodeString.
+//
+// Deprecated: use DecryptString instead. DecodeString is unauthenticated
+// (CFB has no integrity check) and will be removed in v6. DecryptString
+// is not cross-compatible with it.
 func DecodeString(encodedstring string, passphrase string) string {
 	ciphertext, _ := base64.StdEncoding.DecodeString(encodedstring)
 	key := sha256sum(passphrase)

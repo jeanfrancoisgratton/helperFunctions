@@ -16,6 +16,11 @@ import (
 
 // EncodeFile encrypts the contents of infile using AES-256-CFB (same key
 // derivation as EncodeString) and writes the base64-encoded result to outfile.
+//
+// Deprecated: use EncryptFile instead. EncodeFile is unauthenticated (CFB
+// has no integrity check) and derives its key from an unsalted SHA-256
+// hash of the passphrase. It will be removed in v6. EncryptFile is not
+// cross-compatible with it.
 func EncodeFile(infile, outfile, passphrase string) error {
 	plaintext, err := os.ReadFile(infile)
 	if err != nil {
@@ -44,6 +49,10 @@ func EncodeFile(infile, outfile, passphrase string) error {
 
 // DecodeFile decrypts a file that was encrypted by EncodeFile and writes the
 // recovered plaintext to outfile.
+//
+// Deprecated: use DecryptFile instead. DecodeFile is unauthenticated (CFB
+// has no integrity check) and will be removed in v6. DecryptFile is not
+// cross-compatible with it.
 func DecodeFile(infile, outfile, passphrase string) error {
 	encoded, err := os.ReadFile(infile)
 	if err != nil {
