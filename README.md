@@ -4,7 +4,7 @@
 
 A personal Go utility library — a single source of truth for functions that keep appearing across my tools.
 
-Current version: **v5.7.0**  
+Current version: **v5.8.0**  
 Module path: `github.com/jeanfrancoisgratton/helperFunctions/v5`
 
 ---
@@ -176,6 +176,32 @@ File-level counterparts to `EncodeString`/`DecodeString`. Both use the same AES-
 ```go
 err := hf.EncodeFile("secrets.json", "secrets.json.enc", pass)
 err  = hf.DecodeFile("secrets.json.enc", "secrets.json", pass)
+```
+
+### Authenticated encryption (recommended over Encode/Decode)
+
+```go
+func EncryptString(string2encrypt string, passphrase string) (string, error)
+func DecryptString(encrypted string, passphrase string) (string, error)
+func EncryptFile(infile, outfile, passphrase string) error
+func DecryptFile(infile, outfile, passphrase string) error
+```
+
+`Encrypt*`/`Decrypt*` are a separate, authenticated scheme — not a drop-in replacement for `Encode*`/`Decode*`, and not interchangeable with it:
+
+- **AES-256-GCM** instead of CFB: tampering with the ciphertext is detected — `Decrypt*` returns an error — instead of silently producing corrupted plaintext.
+- **Argon2id** instead of a plain SHA-256 hash for key derivation, with a random salt generated per call. The same passphrase never derives the same key twice, and brute-forcing the passphrase is deliberately expensive (memory-hard), unlike a single SHA-256 pass.
+- Output format is base64-encoded `salt || nonce || ciphertext+tag`, versus `Encode*`'s `IV || ciphertext`. `Decrypt*` will reject `Encode*`/`EncodeFile` output (and vice versa) rather than misinterpreting it.
+- Errors are returned, not panicked — unlike `EncodeString`/`DecodeString`.
+
+`Encode*`/`Decode*` are unchanged and still available; existing data encrypted with them keeps working with them. Prefer `Encrypt*`/`Decrypt*` for anything new.
+
+```go
+encrypted, err := hf.EncryptString("s3cr3t", pass)
+plaintext, err := hf.DecryptString(encrypted, pass)
+
+err = hf.EncryptFile("secrets.json", "secrets.json.enc", pass)
+err = hf.DecryptFile("secrets.json.enc", "secrets.json", pass)
 ```
 
 > **Note:** `outfile` is overwritten without prompting. The output file is created with permissions `0600` regardless of the source file's permissions.
@@ -606,6 +632,7 @@ if err := pager.Page(lines, 0, 0); err != nil {
 | Module | Used by |
 |---|---|
 | `charm.land/lipgloss/v2` | `terminalfx` (ANSI colour, text styles, alignment) |
+| `golang.org/x/crypto` | `EncryptString`/`EncryptFile` (Argon2id key derivation) |
 | `golang.org/x/net` | `networking` (public suffix list) |
 | `golang.org/x/term` | `terminalfx`/`prettyjson` (TTY detection), `pager` (raw mode) |
 
