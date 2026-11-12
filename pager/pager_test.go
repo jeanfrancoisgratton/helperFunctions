@@ -114,3 +114,34 @@ func TestLayoutWrapsWideContent(t *testing.T) {
 		t.Errorf("content = %v, want %v", content, want)
 	}
 }
+
+func TestWrapLinesANSI(t *testing.T) {
+	red := "\x1b[31m"
+	reset := "\x1b[0m"
+	tests := []struct {
+		name  string
+		lines []string
+		width int
+		want  []string
+	}{
+		// 3 visible cells, far more bytes: must not wrap
+		{"escapes take no room", []string{red + "abc" + reset}, 3, []string{red + "abc" + reset}},
+		// the colour is closed on the first piece and reopened on the second
+		{"colour carried over", []string{red + "abcdef" + reset}, 4,
+			[]string{red + "abcd" + reset, red + "ef" + reset}},
+		// a colour turned off before the cut is not reopened
+		{"colour ended before the cut", []string{red + "ab" + reset + "cdef"}, 4,
+			[]string{red + "ab" + reset + "cd", "ef"}},
+		// wide characters count as two cells
+		{"wide characters", []string{"日本語"}, 4, []string{"日本", "語"}},
+		{"leading spaces kept", []string{"  abcdef"}, 4, []string{"  ab", "cdef"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wrapLines(tt.lines, tt.width)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("wrapLines(%q, %d) = %q, want %q", tt.lines, tt.width, got, tt.want)
+			}
+		})
+	}
+}

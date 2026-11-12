@@ -7,7 +7,10 @@ package pager
 import (
 	"fmt"
 	"os"
+	"regexp"
+	"strings"
 
+	"github.com/charmbracelet/x/ansi"
 	"golang.org/x/term"
 
 	"github.com/jeanfrancoisgratton/helperFunctions/v5/terminalfx"
@@ -23,6 +26,8 @@ import (
 //
 // Lines wider than the terminal are hard-wrapped so the pagination math
 // (page size, status bar position) stays accurate on narrow terminals.
+// Widths are measured in terminal cells: ANSI escape sequences (colours)
+// take no room and are never cut, and wide characters count as two.
 // The terminal is re-measured on resize (SIGWINCH) so an in-progress
 // session adapts without needing to be restarted; on Windows, where no
 // such signal exists, the new size is picked up on the next keystroke.
@@ -252,27 +257,53 @@ func layout(lines []string, bannerSize, footerSize, termWidth, termHeight int) (
 	return wrappedBanner, wrapLines(contentLines, termWidth), wrappedFooter, pageSize
 }
 
-// wrapLines hard-wraps each line to width runes. width <= 0 disables
-// wrapping. This does not attempt word-boundary wrapping or account for
-// ANSI escape sequences embedded in a line.
+// wrapLines hard-wraps each line to width terminal cells. width <= 0
+// disables wrapping. ANSI escape sequences take no room and are never cut,
+// and wide characters count as two cells. A colour or style still active
+// where a line is cut is closed at the end of that piece and reopened at
+// the start of the next one, so each piece shows correctly on its own (the
+// first line of a page can be any piece).
 func wrapLines(lines []string, width int) []string {
 	if width <= 0 {
 		return lines
 	}
 	out := make([]string, 0, len(lines))
 	for _, l := range lines {
-		r := []rune(l)
-		if len(r) == 0 {
-			out = append(out, "")
+		if ansi.StringWidth(l) <= width {
+			out = append(out, l)
 			continue
 		}
-		for len(r) > width {
-			out = append(out, string(r[:width]))
-			r = r[width:]
+		active := ""
+		for _, piece := range strings.Split(ansi.Hardwrap(l, width, true), "\n") {
+			piece = active + piece
+			active = activeSGR(piece)
+			if active != "" {
+				piece += sgrReset
+			}
+			out = append(out, piece)
 		}
-		out = append(out, string(r))
 	}
 	return out
+}
+
+// sgrReset turns off every colour and style
+const sgrReset = "\x1b[0m"
+
+// sgrSequence matches an SGR (colour/style) escape sequence
+var sgrSequence = regexp.MustCompile(`\x1b\[[0-9;:]*m`)
+
+// activeSGR returns the SGR sequences still in effect at the end of s: all
+// of those after its last reset
+func activeSGR(s string) string {
+	active := ""
+	for _, seq := range sgrSequence.FindAllString(s, -1) {
+		if seq == sgrReset || seq == "\x1b[m" {
+			active = ""
+		} else {
+			active += seq
+		}
+	}
+	return active
 }
 
 // ── terminal helpers (raw-mode safe) ─────────────────────────────────────────

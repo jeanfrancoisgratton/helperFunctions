@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.9.1] - 2026-11-11
+
+### Fixed
+- `pager`: line wrapping now measures terminal cells instead of runes, so ANSI escape sequences no longer count as width (coloured lines were wrapped far too early) and are never cut in half; wide characters count as two cells, and a colour active where a line is cut is carried over to the next piece
+
 ## [5.9.0] - 2026-11-07
 
 ### Added
